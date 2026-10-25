@@ -1,0 +1,125 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  windows:
+    name: Windows package
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-gnu
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Use MinGW-w64
+        shell: pwsh
+        run: Add-Content -Path $env:GITHUB_PATH -Value "C:\mingw64\bin"
+
+      - name: Build
+        run: cargo build --release --locked -p vellum-grid --target x86_64-pc-windows-gnu
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          $name = "vellum-grid-$version-windows-x86_64"
+          New-Item -ItemType Directory -Path $name | Out-Null
+          Copy-Item target/x86_64-pc-windows-gnu/release/vellum-grid.exe $name/
+          Copy-Item packaging/windows/install.ps1, packaging/windows/uninstall.ps1 $name/
+          Copy-Item README.md, CHANGELOG.md, LICENSE-MIT, LICENSE-APACHE $name/
+          Compress-Archive -Path $name -DestinationPath "$name.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: vellum-grid-*-windows-x86_64.zip
+
+  linux:
+    name: Linux packages
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install Linux libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libgl1-mesa-dev libwayland-dev libx11-dev
+
+      - name: Check version
+        run: |
+          version=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
+          if [ "v$version" != "${{ github.ref_name }}" ]; then
+            echo "Tag ${{ github.ref_name }} does not match Cargo.toml version $version"
+            exit 1
+          fi
+
+      - name: Build Debian package
+        run: sh packaging/linux/build-deb.sh
+
+      - name: Package
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          name="vellum-grid-$version-linux-x86_64"
+          mkdir "$name"
+          cp target/release/vellum-grid README.md CHANGELOG.md LICENSE-MIT LICENSE-APACHE "$name/"
+          tar -czf "$name.tar.gz" "$name"
+          cp target/deb/*.deb .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: |
+            vellum-grid-*-linux-x86_64.tar.gz
+            vellum-grid_*.deb
+
+  release:
+    name: Publish release
+    needs: [windows, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Release notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v version="$version" '
+            index($0, "## [" version "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^\[/ { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          test -s notes.md
+
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum * > SHA256SUMS.txt
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Vellum Grid ${GITHUB_REF_NAME#v}" \
+            --notes-file notes.md \
+            --verify-tag

@@ -1,0 +1,14 @@
+[package]
+name = "vellum-grid-cli"
+description = "Command line tool for loading, editing and exporting sheets as CSV"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+vellum-grid-core.workspace = true
+vellum-grid-io.workspace = true

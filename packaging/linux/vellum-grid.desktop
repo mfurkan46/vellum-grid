@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Name=Vellum Grid
+GenericName=Hesap Tablosu
+Comment=Rust ile yazılmış, hızlı ve açık kaynak hesap tablosu
+Exec=vellum-grid %f
+Icon=vellum-grid
+Terminal=false
+Categories=Office;Spreadsheet;
+Keywords=spreadsheet;xlsx;ods;csv;tablo;hesap;
+MimeType=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;application/vnd.ms-excel.sheet.macroEnabled.12;application/vnd.ms-excel;application/vnd.oasis.opendocument.spreadsheet;text/csv;
+Actions=new;
+
+[Desktop Action new]
+Name=Yeni Çalışma Sayfası
+Exec=vellum-grid --new

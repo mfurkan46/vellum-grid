@@ -1,0 +1,13 @@
+[package]
+name = "vellum-ui"
+description = "Shared look, widgets, languages and settings of the Vellum applications"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+eframe.workspace = true

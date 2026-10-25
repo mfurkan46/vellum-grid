@@ -1,0 +1,10 @@
+[package]
+name = "vellum-grid-core"
+description = "Spreadsheet engine core: cell addresses, values, sheets and workbooks"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true

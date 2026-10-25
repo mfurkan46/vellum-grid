@@ -1,0 +1,21 @@
+[package]
+name = "vellum-grid-io"
+description = "File and clipboard formats for Vellum Grid sheets"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+vellum-grid-core.workspace = true
+csv.workspace = true
+calamine.workspace = true
+rust_xlsxwriter.workspace = true
+zip.workspace = true
+quick-xml.workspace = true
+pdf-writer.workspace = true
+subsetter.workspace = true
+ttf-parser.workspace = true
