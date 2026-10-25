@@ -1,10 +1,68 @@
 use eframe::egui::viewport::ResizeDirection;
 use eframe::egui::{
-    Color32, Context, CornerRadius, CursorIcon, Rect, Response, Sense, Ui, ViewportCommand, vec2,
+    Align, Align2, Color32, Context, CornerRadius, CursorIcon, Layout, PointerButton, Rect,
+    Response, Sense, TextureHandle, Ui, ViewportCommand, vec2,
 };
 
 use crate::icons::{self, Icon};
-use crate::{fluent, theme};
+use crate::{fluent, text, theme};
+
+pub fn title_bar(
+    ui: &mut Ui,
+    logo: Option<&TextureHandle>,
+    title: &str,
+    add: impl FnOnce(&mut Ui),
+) {
+    let ctx = ui.ctx().clone();
+    let rect = ui.max_rect();
+    let maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
+    let drag = ui.interact(
+        rect,
+        ui.scope_id().with("title-drag"),
+        Sense::click_and_drag(),
+    );
+    if drag.double_clicked() {
+        ctx.send_viewport_cmd(ViewportCommand::Maximized(!maximized));
+    } else if drag.drag_started_by(PointerButton::Primary) {
+        ctx.send_viewport_cmd(ViewportCommand::StartDrag);
+    }
+    ui.painter().text(
+        rect.center(),
+        Align2::CENTER_CENTER,
+        title,
+        theme::title_font(),
+        theme::chrome_text(),
+    );
+    ui.horizontal_centered(|ui| {
+        ui.spacing_mut().item_spacing.x = 2.0;
+        ui.add_space(theme::CHROME_SPACING);
+        if let Some(logo) = logo {
+            ui.image((logo.id(), vec2(theme::TITLE_LOGO, theme::TITLE_LOGO)));
+        }
+        ui.add_space(theme::CHROME_SPACING);
+        add(ui);
+        if cfg!(target_arch = "wasm32") {
+            return;
+        }
+        ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+            ui.spacing_mut().item_spacing.x = 0.0;
+            if caption(ui, fluent::DISMISS, text::close(), true).clicked() {
+                ctx.send_viewport_cmd(ViewportCommand::Close);
+            }
+            let (glyph, label) = if maximized {
+                (fluent::SQUARE_MULTIPLE, text::restore())
+            } else {
+                (fluent::SQUARE, text::maximize())
+            };
+            if caption(ui, glyph, label, false).clicked() {
+                ctx.send_viewport_cmd(ViewportCommand::Maximized(!maximized));
+            }
+            if caption(ui, fluent::SUBTRACT, text::minimize(), false).clicked() {
+                ctx.send_viewport_cmd(ViewportCommand::Minimized(true));
+            }
+        });
+    });
+}
 
 pub fn quick(ui: &mut Ui, icon: Icon, tip: &str, enabled: bool) -> Response {
     let size = vec2(theme::TOOL_SIZE, theme::TOOL_SIZE);

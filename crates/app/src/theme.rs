@@ -16,7 +16,6 @@ vellum_ui::canvas_colors! {
 }
 
 vellum_ui::colors! {
-    surface: Color32::WHITE, DARK_CANVAS_BG;
     tip_bg: Color32::from_rgb(0xFF, 0xFF, 0xE1), Color32::from_rgb(0x2B, 0x2B, 0x2B);
     note_bg: Color32::from_rgb(0xFF, 0xFF, 0xE1), Color32::from_rgb(0x3A, 0x38, 0x26);
     note_border: Color32::from_rgb(0x9E, 0x9E, 0x9E), Color32::from_rgb(0x6A, 0x68, 0x56);
@@ -214,10 +213,6 @@ pub const NAME_COLUMN: f32 = 140.0;
 pub const NAME_VALUE_COLUMN: f32 = 130.0;
 pub const NAME_REFERS_COLUMN: f32 = 190.0;
 pub const NAME_SCOPE_COLUMN: f32 = 110.0;
-pub const NEW_TILE_WIDTH: f32 = 168.0;
-pub const NEW_TILE_HEIGHT: f32 = 150.0;
-pub const NEW_TILE_LABEL: f32 = 28.0;
-pub const NEW_TILE_INSET: f32 = 16.0;
 pub const NEW_TILE_LINES: usize = 5;
 pub const PRINT_PANEL_WIDTH: f32 = 320.0;
 pub const PRINT_BUTTON: f32 = 88.0;

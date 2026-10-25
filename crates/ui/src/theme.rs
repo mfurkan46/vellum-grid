@@ -208,6 +208,10 @@ pub const BACKSTAGE_FONT_SIZE: f32 = 14.0;
 pub const RECENT_ROW_HEIGHT: f32 = 48.0;
 pub const RECENT_MAX_WIDTH: f32 = 860.0;
 pub const RECENT_ICON_COLUMN: f32 = 52.0;
+pub const NEW_TILE_WIDTH: f32 = 168.0;
+pub const NEW_TILE_HEIGHT: f32 = 150.0;
+pub const NEW_TILE_LABEL: f32 = 28.0;
+pub const NEW_TILE_INSET: f32 = 16.0;
 pub const WIDE_BUTTON_WIDTH: f32 = 300.0;
 pub const WIDE_BUTTON_HEIGHT: f32 = 56.0;
 pub const WIDE_BUTTON_PADDING: f32 = 24.0;
@@ -234,6 +238,7 @@ crate::colors! {
     tint_orange: Color32::from_rgb(0xFB, 0xD5, 0xA5), Color32::from_rgb(0x7A, 0x53, 0x26);
     hover_fill: Color32::from_black_alpha(10), Color32::from_white_alpha(14);
     chrome_bg: Color32::from_rgb(0xF3, 0xF3, 0xF3), Color32::from_rgb(0x1F, 0x1F, 0x1F);
+    surface: Color32::WHITE, DARK_CANVAS_BG;
     tab_hover: Color32::from_rgb(0xE6, 0xE6, 0xE6), Color32::from_rgb(0x33, 0x33, 0x33);
     chrome_line: Color32::from_rgb(0xD1, 0xD1, 0xD1), Color32::from_rgb(0x45, 0x45, 0x45);
     chrome_text: Color32::from_rgb(0x24, 0x24, 0x24), Color32::from_rgb(0xE8, 0xE8, 0xE8);

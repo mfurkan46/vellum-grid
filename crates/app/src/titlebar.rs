@@ -1,43 +1,16 @@
-use eframe::egui::{
-    self, Align, Align2, CornerRadius, Layout, PointerButton, Sense, Stroke, Ui, ViewportCommand,
-    pos2, vec2,
-};
+use eframe::egui::{self, CornerRadius, Sense, Stroke, Ui, pos2, vec2};
 
 use crate::app::Spreadsheet;
 use crate::icons::Icon;
 use crate::{fluent, logo, text, theme};
-use vellum_ui::window::{caption, quick};
 pub use vellum_ui::window::{maximized_inset, resize_edges};
+use vellum_ui::window::{quick, title_bar};
 
 impl Spreadsheet {
     pub fn title_bar(&mut self, ui: &mut Ui) {
-        let ctx = ui.ctx().clone();
-        let rect = ui.max_rect();
-        let maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
-        let drag = ui.interact(
-            rect,
-            ui.scope_id().with("title-drag"),
-            Sense::click_and_drag(),
-        );
-        if drag.double_clicked() {
-            ctx.send_viewport_cmd(ViewportCommand::Maximized(!maximized));
-        } else if drag.drag_started_by(PointerButton::Primary) {
-            ctx.send_viewport_cmd(ViewportCommand::StartDrag);
-        }
-        ui.painter().text(
-            rect.center(),
-            Align2::CENTER_CENTER,
-            &self.book,
-            theme::title_font(),
-            theme::chrome_text(),
-        );
-        ui.horizontal_centered(|ui| {
-            ui.spacing_mut().item_spacing.x = 2.0;
-            ui.add_space(theme::CHROME_SPACING);
-            if let Some(logo) = logo::texture(&ctx) {
-                ui.image((logo.id(), vec2(theme::TITLE_LOGO, theme::TITLE_LOGO)));
-            }
-            ui.add_space(theme::CHROME_SPACING);
+        let logo = logo::texture(ui.ctx());
+        let book = self.book.clone();
+        title_bar(ui, logo.as_ref(), &book, |ui| {
             self.autosave_switch(ui);
             ui.add_space(theme::CHROME_SPACING);
             if quick(ui, Icon::Save, &format!("{} (Ctrl+S)", text::save()), true).clicked() {
@@ -62,26 +35,6 @@ impl Spreadsheet {
             {
                 self.backstage = Some(crate::backstage::Page::Print);
             }
-            if cfg!(target_arch = "wasm32") {
-                return;
-            }
-            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                ui.spacing_mut().item_spacing.x = 0.0;
-                if caption(ui, fluent::DISMISS, text::close(), true).clicked() {
-                    ctx.send_viewport_cmd(ViewportCommand::Close);
-                }
-                let (glyph, label) = if maximized {
-                    (fluent::SQUARE_MULTIPLE, text::restore())
-                } else {
-                    (fluent::SQUARE, text::maximize())
-                };
-                if caption(ui, glyph, label, false).clicked() {
-                    ctx.send_viewport_cmd(ViewportCommand::Maximized(!maximized));
-                }
-                if caption(ui, fluent::SUBTRACT, text::minimize(), false).clicked() {
-                    ctx.send_viewport_cmd(ViewportCommand::Minimized(true));
-                }
-            });
         });
     }
 

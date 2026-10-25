@@ -9,7 +9,6 @@ vellum_ui::texts! {
     open: "Aç…", "Open…";
     save: "Kaydet", "Save";
     save_as: "Farklı Kaydet…", "Save As…";
-    close: "Kapat", "Close";
     undo: "Geri Al", "Undo";
     redo: "Yinele", "Redo";
     cut: "Kes", "Cut";
@@ -1012,9 +1011,6 @@ vellum_ui::texts! {
     autosave_tip: "Açıkken değişiklikler birkaç saniye içinde dosyaya kaydedilir.", "When on, changes are saved to the file within a few seconds.";
     on: "Açık", "On";
     off: "Kapalı", "Off";
-    minimize: "Simge Durumuna Küçült", "Minimize";
-    maximize: "Ekranı Kapla", "Maximize";
-    restore: "Önceki Boyut", "Restore Down";
     move_copy: "Taşı veya Kopyala…", "Move or Copy…";
     move_copy_title: "Taşı veya Kopyala", "Move or Copy";
     move_before: "Seçili sayfayı şu sayfadan önceye taşı:", "Before sheet:";

@@ -13,6 +13,10 @@ crate::texts! {
     day_ago: "gün önce", "day ago";
     days_ago: "gün önce", "days ago";
     options: "Seçenekler", "Options";
+    close: "Kapat", "Close";
+    minimize: "Simge Durumuna Küçült", "Minimize";
+    maximize: "Ekranı Kapla", "Maximize";
+    restore: "Önceki Boyut", "Restore Down";
     theme_label: "Tema:", "Theme:";
     language_label: "Arayüz dili:", "Display language:";
     theme_system: "Sistem ayarını kullan", "Use system setting";
