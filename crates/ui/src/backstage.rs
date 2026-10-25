@@ -1,8 +1,8 @@
 use std::path::Path;
 
 use eframe::egui::{
-    Align2, CornerRadius, FontFamily, FontId, Rect, Response, Sense, Stroke, StrokeKind, Ui, pos2,
-    vec2,
+    Align2, Color32, CornerRadius, FontFamily, FontId, Rect, Response, Sense, Stroke, StrokeKind,
+    Ui, pos2, vec2,
 };
 
 use crate::icons::{self, Icon};
@@ -47,14 +47,61 @@ pub fn nav_row(ui: &mut Ui, glyph: Option<fluent::Glyph>, label: &str, selected:
 }
 
 pub fn separator(ui: &mut Ui) {
+    nav_line(ui, theme::BACKSTAGE_NAV_LINE);
+}
+
+pub fn side_separator(ui: &mut Ui) {
+    nav_line(ui, theme::chrome_line());
+}
+
+fn nav_line(ui: &mut Ui, color: Color32) {
     ui.add_space(theme::DIALOG_SPACING);
     let rect = ui.available_rect_before_wrap();
     ui.painter().hline(
         rect.left() + theme::BACKSTAGE_NAV_ICON_COLUMN / 2.0..=rect.right() - theme::DIALOG_SPACING,
         rect.top(),
-        Stroke::new(1.0, theme::BACKSTAGE_NAV_LINE),
+        Stroke::new(1.0, color),
     );
     ui.add_space(theme::DIALOG_SPACING);
+}
+
+pub fn side_row(ui: &mut Ui, glyph: fluent::Glyph, label: &str, selected: bool) -> Response {
+    let size = vec2(ui.available_width(), theme::BACKSTAGE_NAV_ITEM);
+    let (rect, response) = ui.allocate_exact_size(size, Sense::click());
+    let row = rect.shrink2(vec2(theme::SIDE_ROW_INSET, theme::SIDE_ROW_GAP));
+    let fill = if selected {
+        theme::tab_hover()
+    } else {
+        crate::motion::hover_color(ui, &response, response.hovered(), theme::hover_fill())
+    };
+    let painter = ui.painter();
+    painter.rect_filled(row, CornerRadius::same(theme::MENU_RADIUS), fill);
+    if selected {
+        let marker = Rect::from_min_size(
+            pos2(row.left(), row.center().y - theme::SIDE_MARKER_HEIGHT / 2.0),
+            vec2(theme::SIDE_MARKER_WIDTH, theme::SIDE_MARKER_HEIGHT),
+        );
+        painter.rect_filled(marker, CornerRadius::same(2), theme::accent());
+    }
+    let area = Rect::from_center_size(
+        pos2(
+            rect.left() + theme::BACKSTAGE_NAV_ICON_COLUMN / 2.0,
+            rect.center().y,
+        ),
+        vec2(theme::ICON_SIZE, theme::ICON_SIZE),
+    );
+    icons::paint(painter, area, Icon::Plain(glyph), theme::icon(), None);
+    painter.text(
+        pos2(
+            rect.left() + theme::BACKSTAGE_NAV_ICON_COLUMN,
+            rect.center().y,
+        ),
+        Align2::LEFT_CENTER,
+        label,
+        theme::backstage_font(),
+        theme::chrome_text(),
+    );
+    response
 }
 
 pub fn recent_row(ui: &mut Ui, path: &Path, icon: Icon) -> Response {
