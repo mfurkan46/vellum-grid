@@ -1079,6 +1079,7 @@ impl Spreadsheet {
 impl eframe::App for Spreadsheet {
     fn ui(&mut self, ui: &mut Ui, _frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
+        self.prefs.reload_on_focus(&ctx);
         self.prefs
             .apply(ctx.system_theme() == Some(egui::Theme::Dark));
         if self.styled != Some(vellum_ui::dark()) {

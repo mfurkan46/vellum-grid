@@ -14,6 +14,7 @@ crate::texts! {
     days_ago: "gün önce", "days ago";
     options: "Seçenekler", "Options";
     close: "Kapat", "Close";
+    version: "Sürüm", "Version";
     minimize: "Simge Durumuna Küçült", "Minimize";
     maximize: "Ekranı Kapla", "Maximize";
     restore: "Önceki Boyut", "Restore Down";

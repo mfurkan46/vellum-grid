@@ -1006,7 +1006,6 @@ vellum_ui::texts! {
     about: "Hakkında", "About";
     about_text: "Rust ile yazılmış, hızlı, açık kaynak ve çevrimdışı çalışan bir hesap tablosu. Vellum ailesinin bir üyesidir.", "A fast, open source spreadsheet written in Rust that works offline. Part of the Vellum family.";
     about_license: "MIT veya Apache-2.0 lisanslıdır. İkonlar: Fluent UI System Icons (MIT). Türkçe sözlük: Harun Reşit Zafer (MIT). İngilizce sözlük: SCOWL, Kevin Atkinson.", "Licensed under MIT or Apache-2.0. Icons: Fluent UI System Icons (MIT). Turkish dictionary: Harun Reşit Zafer (MIT). English dictionary: SCOWL, Kevin Atkinson.";
-    version: "Sürüm", "Version";
     autosave: "Otomatik Kaydet", "AutoSave";
     autosave_tip: "Açıkken değişiklikler birkaç saniye içinde dosyaya kaydedilir.", "When on, changes are saved to the file within a few seconds.";
     on: "Açık", "On";

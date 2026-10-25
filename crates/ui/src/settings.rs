@@ -163,6 +163,12 @@ impl Prefs {
         }
     }
 
+    pub fn reload_on_focus(&mut self, ctx: &eframe::egui::Context) {
+        if crate::window::focus_gained(ctx) {
+            *self = Self::load();
+        }
+    }
+
     pub fn apply(&self, system_dark: bool) {
         crate::set_english(self.language == Language::English);
         let dark = self.is_dark(system_dark);

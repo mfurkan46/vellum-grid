@@ -1,6 +1,6 @@
 use eframe::egui::viewport::ResizeDirection;
 use eframe::egui::{
-    Align, Align2, Color32, Context, CornerRadius, CursorIcon, Layout, PointerButton, Rect,
+    Align, Align2, Color32, Context, CornerRadius, CursorIcon, Event, Layout, PointerButton, Rect,
     Response, Sense, TextureHandle, Ui, ViewportCommand, vec2,
 };
 
@@ -108,6 +108,14 @@ pub fn caption(ui: &mut Ui, glyph: fluent::Glyph, tip: &str, close: bool) -> Res
     );
     icons::paint(ui.painter(), area, Icon::Plain(glyph), color, None);
     response.on_hover_text(tip)
+}
+
+pub fn focus_gained(ctx: &Context) -> bool {
+    ctx.input(|i| {
+        i.events
+            .iter()
+            .any(|event| matches!(event, Event::WindowFocused(true)))
+    })
 }
 
 pub fn resize_edges(ctx: &Context) {
