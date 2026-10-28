@@ -26,4 +26,18 @@ crate::texts! {
     canvas_label: "Belge zemini:", "Document background:";
     canvas_white: "Beyaz", "White";
     options_note: "Bu ayarlar bütün Vellum uygulamalarında geçerlidir.", "These settings apply to all Vellum apps.";
+    file: "Dosya", "File";
+    back: "Geri", "Back";
+    collapse_ribbon: "Şeridi Daralt", "Collapse the Ribbon";
+    zoom_level: "Yakınlaştırma düzeyi", "Zoom level";
+    zoom_in: "Yakınlaştır", "Zoom In";
+    zoom_out: "Uzaklaştır", "Zoom Out";
+}
+
+pub fn percent_of(value: impl std::fmt::Display) -> String {
+    if crate::english() {
+        format!("{value}%")
+    } else {
+        format!("%{value}")
+    }
 }

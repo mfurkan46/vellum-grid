@@ -1,14 +1,14 @@
 use eframe::egui::{
-    self, Align2, CornerRadius, Frame, Id, Margin, Rect, RichText, Sense, Stroke, StrokeKind, Ui,
-    pos2, vec2,
+    self, Align2, CornerRadius, Rect, RichText, Sense, Stroke, StrokeKind, Ui, pos2, vec2,
 };
 
 use crate::app::{Pending, Spreadsheet};
 use crate::icons::Icon;
 use crate::{files, fluent, settings, text, theme};
 pub use vellum_ui::backstage::wide_button;
-use vellum_ui::backstage::{nav_row, recent_row, separator, sized_button, wide_width};
-use vellum_ui::motion;
+use vellum_ui::backstage::{
+    Part, back_row, nav_row, page_title, recent_row, screen, separator, sized_button, wide_width,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Page {
@@ -41,49 +41,13 @@ enum Nav {
 
 impl Spreadsheet {
     pub fn backstage(&mut self, ui: &mut Ui, page: Page, shown: f32) {
-        egui::Panel::left("backstage-nav")
-            .exact_size(theme::BACKSTAGE_NAV_WIDTH)
-            .resizable(false)
-            .frame(Frame::NONE.fill(theme::surface()))
-            .show(ui, |ui| {
-                let slide = vec2(-theme::BACKSTAGE_NAV_WIDTH, 0.0);
-                motion::revealed(ui, shown, slide, |ui| {
-                    ui.painter().rect_filled(
-                        ui.max_rect(),
-                        CornerRadius::ZERO,
-                        theme::backstage_nav(),
-                    );
-                    self.backstage_nav(ui, page);
-                });
-            });
-        egui::CentralPanel::no_frame().show(ui, |ui| {
-            Frame::NONE
-                .fill(theme::surface())
-                .inner_margin(Margin::symmetric(
-                    theme::BACKSTAGE_PADDING_X,
-                    theme::BACKSTAGE_PADDING_Y,
-                ))
-                .show(ui, |ui| {
-                    let mut current = shown;
-                    for other in Page::ALL {
-                        let t = motion::reveal(
-                            ui.ctx(),
-                            Id::unique(("backstage-page", other)),
-                            other == page,
-                            theme::BACKSTAGE_ANIMATION,
-                        );
-                        if other == page {
-                            current = current.min(t);
-                        }
-                    }
-                    let slide = vec2(theme::BACKSTAGE_SLIDE, 0.0);
-                    motion::revealed(ui, current, slide, |ui| self.backstage_page(ui, page));
-                });
+        screen(ui, shown, &Page::ALL, page, |ui, part| match part {
+            Part::Nav => self.backstage_nav(ui, page),
+            Part::Page => self.backstage_page(ui, page),
         });
     }
 
     fn backstage_page(&mut self, ui: &mut Ui, page: Page) {
-        ui.set_min_size(ui.available_size());
         let title = match page {
             Page::Home => text::greeting(),
             Page::New => text::new(),
@@ -92,12 +56,7 @@ impl Spreadsheet {
             Page::Print => text::print(),
             Page::Export => text::export(),
         };
-        ui.label(
-            RichText::new(title)
-                .size(theme::BACKSTAGE_TITLE)
-                .color(theme::chrome_text()),
-        );
-        ui.add_space(theme::BACKSTAGE_GAP);
+        page_title(ui, title);
         if page == Page::Print {
             self.print_page_ui(ui);
             return;
@@ -126,12 +85,9 @@ impl Spreadsheet {
     }
 
     fn backstage_nav(&mut self, ui: &mut Ui, page: Page) {
-        ui.add_space(theme::BACKSTAGE_NAV_TOP);
-        let back = nav_row(ui, Some(fluent::ARROW_LEFT), "", false);
-        if back.on_hover_text(text::back()).clicked() {
+        if back_row(ui) {
             self.backstage = None;
         }
-        ui.add_space(theme::BACKSTAGE_NAV_TOP);
         let items = [
             (Some(fluent::HOME), text::home_page(), Nav::Page(Page::Home)),
             (

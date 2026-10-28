@@ -33,6 +33,12 @@ pub const ALIGN_TOP: Glyph = Glyph {
     small_fill: '\u{e04a}',
     large_fill: '\u{e04b}',
 };
+pub const ARROW_DOWN: Glyph = Glyph {
+    small: '\u{f148}',
+    large: '\u{f149}',
+    small_fill: '\u{f148}',
+    large_fill: '\u{f149}',
+};
 pub const ARROW_EXPORT: Glyph = Glyph {
     small: '\u{f0280}',
     large: '\u{f0281}',
@@ -57,11 +63,41 @@ pub const ARROW_LEFT: Glyph = Glyph {
     small_fill: '\u{f15b}',
     large_fill: '\u{f15c}',
 };
+pub const ARROW_NEXT: Glyph = Glyph {
+    small: '\u{f16a}',
+    large: '\u{f16b}',
+    small_fill: '\u{f16a}',
+    large_fill: '\u{f16b}',
+};
+pub const ARROW_PREVIOUS: Glyph = Glyph {
+    small: '\u{f16c}',
+    large: '\u{f16d}',
+    small_fill: '\u{f16c}',
+    large_fill: '\u{f16d}',
+};
 pub const ARROW_REDO: Glyph = Glyph {
     small: '\u{f16e}',
     large: '\u{f16f}',
     small_fill: '\u{f16e}',
     large_fill: '\u{f16f}',
+};
+pub const ARROW_ROTATE_CCW: Glyph = Glyph {
+    small: '\u{f187}',
+    large: '\u{f188}',
+    small_fill: '\u{f187}',
+    large_fill: '\u{f188}',
+};
+pub const ARROW_ROTATE_CW: Glyph = Glyph {
+    small: '\u{f185}',
+    large: '\u{f186}',
+    small_fill: '\u{f185}',
+    large_fill: '\u{f186}',
+};
+pub const ARROW_SPLIT: Glyph = Glyph {
+    small: '\u{e0f4}',
+    large: '\u{e0f5}',
+    small_fill: '\u{e0f4}',
+    large_fill: '\u{e0f5}',
 };
 pub const ARROW_SYNC: Glyph = Glyph {
     small: '\u{f190}',
@@ -75,6 +111,12 @@ pub const ARROW_UNDO: Glyph = Glyph {
     small_fill: '\u{f199}',
     large_fill: '\u{f19a}',
 };
+pub const ARROW_UP: Glyph = Glyph {
+    small: '\u{f19b}',
+    large: '\u{f19c}',
+    small_fill: '\u{f19b}',
+    large_fill: '\u{f19c}',
+};
 pub const AUTOSUM: Glyph = Glyph {
     small: '\u{f1af}',
     large: '\u{f1b0}',
@@ -86,6 +128,24 @@ pub const BOOK: Glyph = Glyph {
     large: '\u{f8fe}',
     small_fill: '\u{e172}',
     large_fill: '\u{e173}',
+};
+pub const BOOKMARK: Glyph = Glyph {
+    small: '\u{f1f5}',
+    large: '\u{f1f6}',
+    small_fill: '\u{f1f5}',
+    large_fill: '\u{f1f6}',
+};
+pub const BOOKMARK_MULTIPLE: Glyph = Glyph {
+    small: '\u{e193}',
+    large: '\u{e194}',
+    small_fill: '\u{e1a7}',
+    large_fill: '\u{e1a8}',
+};
+pub const BOOK_OPEN: Glyph = Glyph {
+    small: '\u{e178}',
+    large: '\u{e179}',
+    small_fill: '\u{e18c}',
+    large_fill: '\u{e18d}',
 };
 pub const BORDER_ALL: Glyph = Glyph {
     small: '\u{e19c}',
@@ -255,6 +315,12 @@ pub const COPY_SELECT: Glyph = Glyph {
     small_fill: '\u{e430}',
     large_fill: '\u{f000b}',
 };
+pub const CURSOR: Glyph = Glyph {
+    small: '\u{e443}',
+    large: '\u{e444}',
+    small_fill: '\u{e44f}',
+    large_fill: '\u{e450}',
+};
 pub const CUT: Glyph = Glyph {
     small: '\u{f33a}',
     large: '\u{f33b}',
@@ -339,6 +405,12 @@ pub const DOCUMENT_ADD: Glyph = Glyph {
     small_fill: '\u{e4e7}',
     large_fill: '\u{e4e8}',
 };
+pub const DOCUMENT_ARROW_RIGHT: Glyph = Glyph {
+    small: '\u{e4e6}',
+    large: '\u{e4e7}',
+    small_fill: '\u{e4f2}',
+    large_fill: '\u{e4f3}',
+};
 pub const DOCUMENT_COPY: Glyph = Glyph {
     small: '\u{f380}',
     large: '\u{f381}',
@@ -351,6 +423,12 @@ pub const DOCUMENT_HEADER_FOOTER: Glyph = Glyph {
     small_fill: '\u{f390}',
     large_fill: '\u{f391}',
 };
+pub const DOCUMENT_LOCK: Glyph = Glyph {
+    small: '\u{e515}',
+    large: '\u{e516}',
+    small_fill: '\u{e521}',
+    large_fill: '\u{e522}',
+};
 pub const DOCUMENT_MARGINS: Glyph = Glyph {
     small: '\u{f395}',
     large: '\u{f396}',
@@ -362,6 +440,12 @@ pub const DOCUMENT_ONE_PAGE: Glyph = Glyph {
     large: '\u{f39a}',
     small_fill: '\u{f399}',
     large_fill: '\u{f39a}',
+};
+pub const DOCUMENT_ONE_PAGE_MULTIPLE: Glyph = Glyph {
+    small: '\u{f017b}',
+    large: '\u{f017c}',
+    small_fill: '\u{f017b}',
+    large_fill: '\u{f017c}',
 };
 pub const DOCUMENT_PAGE_BREAK: Glyph = Glyph {
     small: '\u{e527}',
@@ -392,6 +476,24 @@ pub const DOCUMENT_TABLE: Glyph = Glyph {
     large: '\u{e54c}',
     small_fill: '\u{e557}',
     large_fill: '\u{e558}',
+};
+pub const DOCUMENT_TEXT_EXTRACT: Glyph = Glyph {
+    small: '\u{e55b}',
+    large: '\u{e55c}',
+    small_fill: '\u{e567}',
+    large_fill: '\u{e568}',
+};
+pub const DRAW_SHAPE: Glyph = Glyph {
+    small: '\u{e575}',
+    large: '\u{e576}',
+    small_fill: '\u{e581}',
+    large_fill: '\u{e582}',
+};
+pub const EDIT: Glyph = Glyph {
+    small: '\u{f3dd}',
+    large: '\u{f3de}',
+    small_fill: '\u{f3dc}',
+    large_fill: '\u{f3dd}',
 };
 pub const ERASER: Glyph = Glyph {
     small: '\u{e5e4}',
@@ -435,6 +537,12 @@ pub const FILTER_SYNC: Glyph = Glyph {
     small_fill: '\u{e61c}',
     large_fill: '\u{e61d}',
 };
+pub const FIT_WIDTH: Glyph = Glyph {
+    small: '\u{e07c}',
+    large: '\u{f8ce}',
+    small_fill: '\u{e07c}',
+    large_fill: '\u{f8e6}',
+};
 pub const FLASH: Glyph = Glyph {
     small: '\u{e618}',
     large: '\u{e619}',
@@ -465,6 +573,18 @@ pub const FONT_INCREASE: Glyph = Glyph {
     small_fill: '\u{f43d}',
     large_fill: '\u{f43e}',
 };
+pub const FORM: Glyph = Glyph {
+    small: '\u{eea7}',
+    large: '\u{eea8}',
+    small_fill: '\u{eea7}',
+    large_fill: '\u{eea8}',
+};
+pub const FULL_SCREEN: Glyph = Glyph {
+    small: '\u{e684}',
+    large: '\u{e685}',
+    small_fill: '\u{e691}',
+    large_fill: '\u{e692}',
+};
 pub const GLOBE: Glyph = Glyph {
     small: '\u{f45a}',
     large: '\u{f45b}',
@@ -482,6 +602,18 @@ pub const GROUP: Glyph = Glyph {
     large: '\u{f466}',
     small_fill: '\u{f469}',
     large_fill: '\u{f46a}',
+};
+pub const HAND: Glyph = Glyph {
+    small: '\u{e6db}',
+    large: '\u{e6dc}',
+    small_fill: '\u{e6e8}',
+    large_fill: '\u{e6e9}',
+};
+pub const HIGHLIGHT: Glyph = Glyph {
+    small: '\u{f47c}',
+    large: '\u{f47d}',
+    small_fill: '\u{f480}',
+    large_fill: '\u{f481}',
 };
 pub const HISTORY: Glyph = Glyph {
     small: '\u{f47e}',
@@ -501,11 +633,23 @@ pub const IMAGE: Glyph = Glyph {
     small_fill: '\u{f48f}',
     large_fill: '\u{f490}',
 };
+pub const IMAGE_ADD: Glyph = Glyph {
+    small: '\u{e71a}',
+    large: '\u{f48c}',
+    small_fill: '\u{e727}',
+    large_fill: '\u{f493}',
+};
 pub const INFO: Glyph = Glyph {
     small: '\u{f4a3}',
     large: '\u{f4a4}',
     small_fill: '\u{f4aa}',
     large_fill: '\u{f4ab}',
+};
+pub const INK: Glyph = Glyph {
+    small: '\u{f4a7}',
+    large: '\u{f4a8}',
+    small_fill: '\u{f4ae}',
+    large_fill: '\u{f4af}',
 };
 pub const KEYBOARD: Glyph = Glyph {
     small: '\u{f4b8}',
@@ -530,6 +674,12 @@ pub const MATH_FORMULA: Glyph = Glyph {
     large: '\u{e7e3}',
     small_fill: '\u{e7f0}',
     large_fill: '\u{e7f1}',
+};
+pub const MERGE: Glyph = Glyph {
+    small: '\u{e7f7}',
+    large: '\u{f53e}',
+    small_fill: '\u{e805}',
+    large_fill: '\u{f548}',
 };
 pub const MONEY: Glyph = Glyph {
     small: '\u{f54f}',
@@ -585,6 +735,12 @@ pub const PAINT_BUCKET: Glyph = Glyph {
     small_fill: '\u{f59f}',
     large_fill: '\u{f5a0}',
 };
+pub const PANEL_LEFT: Glyph = Glyph {
+    small: '\u{e8b0}',
+    large: '\u{e8b1}',
+    small_fill: '\u{e8be}',
+    large_fill: '\u{e8bf}',
+};
 pub const PRINT: Glyph = Glyph {
     small: '\u{f62a}',
     large: '\u{f62b}',
@@ -602,6 +758,12 @@ pub const QUESTION_CIRCLE: Glyph = Glyph {
     large: '\u{f63e}',
     small_fill: '\u{f647}',
     large_fill: '\u{f648}',
+};
+pub const RATIO_ONE_TO_ONE: Glyph = Glyph {
+    small: '\u{f70a}',
+    large: '\u{f70b}',
+    small_fill: '\u{f713}',
+    large_fill: '\u{f714}',
 };
 pub const RENAME: Glyph = Glyph {
     small: '\u{f669}',
@@ -627,6 +789,12 @@ pub const SAVE_EDIT: Glyph = Glyph {
     small_fill: '\u{ea50}',
     large_fill: '\u{ea51}',
 };
+pub const SCAN_TEXT: Glyph = Glyph {
+    small: '\u{ea65}',
+    large: '\u{ea66}',
+    small_fill: '\u{ea6d}',
+    large_fill: '\u{ea6e}',
+};
 pub const SEARCH: Glyph = Glyph {
     small: '\u{f68f}',
     large: '\u{f690}',
@@ -650,6 +818,18 @@ pub const SHIELD: Glyph = Glyph {
     large: '\u{f6bf}',
     small_fill: '\u{f6c7}',
     large_fill: '\u{f6c8}',
+};
+pub const SHIELD_LOCK: Glyph = Glyph {
+    small: '\u{ead0}',
+    large: '\u{ead1}',
+    small_fill: '\u{ead9}',
+    large_fill: '\u{eada}',
+};
+pub const SIGNATURE: Glyph = Glyph {
+    small: '\u{f6dc}',
+    large: '\u{f6dd}',
+    small_fill: '\u{f6e5}',
+    large_fill: '\u{f6e6}',
 };
 pub const SORT: Glyph = Glyph {
     small: '\u{f18a}',
@@ -831,6 +1011,12 @@ pub const TEXTBOX: Glyph = Glyph {
     small_fill: '\u{f828}',
     large_fill: '\u{f829}',
 };
+pub const TEXT_ADD: Glyph = Glyph {
+    small: '\u{ecb0}',
+    large: '\u{ecb0}',
+    small_fill: '\u{ecae}',
+    large_fill: '\u{ecae}',
+};
 pub const TEXT_ALIGN_CENTER: Glyph = Glyph {
     small: '\u{f799}',
     large: '\u{f79a}',
@@ -890,6 +1076,12 @@ pub const TEXT_STRIKETHROUGH: Glyph = Glyph {
     large: '\u{ed60}',
     small_fill: '\u{ed5f}',
     large_fill: '\u{ed60}',
+};
+pub const TEXT_UNDERLINE: Glyph = Glyph {
+    small: '\u{f80a}',
+    large: '\u{f80b}',
+    small_fill: '\u{f823}',
+    large_fill: '\u{f824}',
 };
 pub const TEXT_WRAP: Glyph = Glyph {
     small: '\u{ed69}',

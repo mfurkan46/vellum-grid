@@ -1,7 +1,7 @@
 use eframe::egui::viewport::ResizeDirection;
 use eframe::egui::{
     Align, Align2, Color32, Context, CornerRadius, CursorIcon, Event, Layout, PointerButton, Rect,
-    Response, Sense, TextureHandle, Ui, ViewportCommand, vec2,
+    Response, RichText, Sense, TextureHandle, Ui, UiBuilder, ViewportCommand, vec2,
 };
 
 use crate::icons::{self, Icon};
@@ -13,6 +13,47 @@ pub fn title_bar(
     title: &str,
     add: impl FnOnce(&mut Ui),
 ) {
+    let rect = ui.max_rect();
+    ui.painter().text(
+        rect.center(),
+        Align2::CENTER_CENTER,
+        title,
+        theme::title_font(),
+        theme::chrome_text(),
+    );
+    bar(ui, logo, add);
+}
+
+/// A title bar whose middle holds `center`, `center_width` wide; the title follows the quick
+/// access toolbar instead.
+pub fn title_bar_centered(
+    ui: &mut Ui,
+    logo: Option<&TextureHandle>,
+    title: &str,
+    add: impl FnOnce(&mut Ui),
+    center_width: f32,
+    center: impl FnOnce(&mut Ui),
+) {
+    let rect = ui.max_rect();
+    bar(ui, logo, |ui| {
+        add(ui);
+        ui.add_space(2.0 * theme::CHROME_SPACING);
+        ui.label(
+            RichText::new(title)
+                .font(theme::title_font())
+                .color(theme::chrome_text()),
+        );
+    });
+    let area = Rect::from_center_size(rect.center(), vec2(center_width, rect.height()));
+    ui.scope_builder(
+        UiBuilder::new()
+            .max_rect(area)
+            .layout(Layout::left_to_right(Align::Center)),
+        center,
+    );
+}
+
+fn bar(ui: &mut Ui, logo: Option<&TextureHandle>, add: impl FnOnce(&mut Ui)) {
     let ctx = ui.ctx().clone();
     let rect = ui.max_rect();
     let maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
@@ -26,13 +67,6 @@ pub fn title_bar(
     } else if drag.drag_started_by(PointerButton::Primary) {
         ctx.send_viewport_cmd(ViewportCommand::StartDrag);
     }
-    ui.painter().text(
-        rect.center(),
-        Align2::CENTER_CENTER,
-        title,
-        theme::title_font(),
-        theme::chrome_text(),
-    );
     ui.horizontal_centered(|ui| {
         ui.spacing_mut().item_spacing.x = 2.0;
         ui.add_space(theme::CHROME_SPACING);

@@ -4,7 +4,6 @@ vellum_ui::texts! {
     app_name: "Vellum Grid", "Vellum Grid";
     new_book: "Kitap1", "Book1";
     new_sheet: "Sayfa1", "Sheet1";
-    file: "Dosya", "File";
     new: "Yeni", "New";
     open: "Aç…", "Open…";
     save: "Kaydet", "Save";
@@ -516,7 +515,6 @@ vellum_ui::texts! {
     chart_title_label: "Grafik başlığı:", "Chart title:";
     review: "Gözden Geçir", "Review";
     help: "Yardım", "Help";
-    collapse_ribbon: "Şeridi Daralt", "Collapse the Ribbon";
     paste_special: "Özel Yapıştır…", "Paste Special…";
     orientation: "Yönlendirme", "Orientation";
     indent_decrease: "Girintiyi Azalt", "Decrease Indent";
@@ -1060,9 +1058,6 @@ vellum_ui::texts! {
     numeric_count: "Sayısal Sayım", "Numerical Count";
     minimum: "En Küçük", "Minimum";
     maximum: "En Büyük", "Maximum";
-    zoom_level: "Yakınlaştırma düzeyi", "Zoom level";
-    zoom_in: "Yakınlaştır", "Zoom In";
-    zoom_out: "Uzaklaştır", "Zoom Out";
     zoom_custom: "Özel:", "Custom:";
     enter_button: "Gir", "Enter";
     expand_bar: "Formül Çubuğunu Genişlet", "Expand Formula Bar";
@@ -1138,7 +1133,6 @@ vellum_ui::texts! {
     home_page: "Giriş", "Home";
     info: "Bilgi", "Info";
     export: "Dışarı Aktar", "Export";
-    back: "Geri", "Back";
     browse: "Gözat", "Browse";
     blank_workbook: "Boş çalışma kitabı", "Blank workbook";
     recent: "Son Kullanılanlar", "Recent";
@@ -1323,13 +1317,5 @@ pub fn header_presets() -> &'static [(&'static str, &'static str)] {
             ("Dosya adı, sayfa numarası", "&L&F&RSayfa &P"),
             ("Tarih ve saat", "&R&D &T"),
         ]
-    }
-}
-
-pub fn percent_of(value: impl std::fmt::Display) -> String {
-    if vellum_ui::english() {
-        format!("{value}%")
-    } else {
-        format!("%{value}")
     }
 }

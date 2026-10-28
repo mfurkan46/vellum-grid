@@ -1,12 +1,88 @@
+use std::fmt::Debug;
+use std::hash::Hash;
 use std::path::Path;
 
 use eframe::egui::{
-    Align2, Color32, CornerRadius, FontFamily, FontId, Rect, Response, Sense, Stroke, StrokeKind,
-    Ui, pos2, vec2,
+    self, Align2, Color32, CornerRadius, FontFamily, FontId, Frame, Id, Margin, Rect, Response,
+    RichText, Sense, Stroke, StrokeKind, Ui, pos2, vec2,
 };
 
 use crate::icons::{self, Icon};
-use crate::{fluent, fonts, settings, theme};
+use crate::{fluent, fonts, motion, settings, text, theme};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Part {
+    Nav,
+    Page,
+}
+
+/// The File screen: `add` draws the accent navigation column, which slides in from the left,
+/// and the current `page`, which slides in from the right. `shown` is the opening animation;
+/// `pages` lists every page so switching between them animates.
+pub fn screen<K: Hash + Debug + Copy + Eq + Send + Sync + 'static>(
+    ui: &mut Ui,
+    shown: f32,
+    pages: &[K],
+    page: K,
+    mut add: impl FnMut(&mut Ui, Part),
+) {
+    egui::Panel::left("backstage-nav")
+        .exact_size(theme::BACKSTAGE_NAV_WIDTH)
+        .resizable(false)
+        .frame(Frame::NONE.fill(theme::surface()))
+        .show(ui, |ui| {
+            let slide = vec2(-theme::BACKSTAGE_NAV_WIDTH, 0.0);
+            motion::revealed(ui, shown, slide, |ui| {
+                ui.painter()
+                    .rect_filled(ui.max_rect(), CornerRadius::ZERO, theme::backstage_nav());
+                add(ui, Part::Nav);
+            });
+        });
+    egui::CentralPanel::no_frame().show(ui, |ui| {
+        Frame::NONE
+            .fill(theme::surface())
+            .inner_margin(Margin::symmetric(
+                theme::BACKSTAGE_PADDING_X,
+                theme::BACKSTAGE_PADDING_Y,
+            ))
+            .show(ui, |ui| {
+                let mut current = shown;
+                for &other in pages {
+                    let t = motion::reveal(
+                        ui.ctx(),
+                        Id::unique(("backstage-page", other)),
+                        other == page,
+                        theme::BACKSTAGE_ANIMATION,
+                    );
+                    if other == page {
+                        current = current.min(t);
+                    }
+                }
+                let slide = vec2(theme::BACKSTAGE_SLIDE, 0.0);
+                motion::revealed(ui, current, slide, |ui| {
+                    ui.set_min_size(ui.available_size());
+                    add(ui, Part::Page);
+                });
+            });
+    });
+}
+
+/// The back arrow at the top of the File screen navigation.
+pub fn back_row(ui: &mut Ui) -> bool {
+    ui.add_space(theme::BACKSTAGE_NAV_TOP);
+    let back = nav_row(ui, Some(fluent::ARROW_LEFT), "", false);
+    ui.add_space(theme::BACKSTAGE_NAV_TOP);
+    back.on_hover_text(text::back()).clicked()
+}
+
+pub fn page_title(ui: &mut Ui, title: &str) {
+    ui.label(
+        RichText::new(title)
+            .size(theme::BACKSTAGE_TITLE)
+            .color(theme::chrome_text()),
+    );
+    ui.add_space(theme::BACKSTAGE_GAP);
+}
 
 pub fn nav_row(ui: &mut Ui, glyph: Option<fluent::Glyph>, label: &str, selected: bool) -> Response {
     let size = vec2(ui.available_width(), theme::BACKSTAGE_NAV_ITEM);
