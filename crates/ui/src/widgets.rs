@@ -1,6 +1,6 @@
 use eframe::egui::{
-    Align2, Color32, CornerRadius, Rect, Response, RichText, Sense, Stroke, StrokeKind, Ui, pos2,
-    vec2,
+    Align2, Color32, CornerRadius, Id, Rect, Response, RichText, Sense, Stroke, StrokeKind, Ui,
+    pos2, vec2,
 };
 
 use crate::icons::{self, Icon};
@@ -101,8 +101,25 @@ fn group_with_launcher(
     clicked
 }
 
+/// Draws `add` disabled, as a feature still to come.
 pub fn soon(ui: &mut Ui, add: impl FnOnce(&mut Ui)) {
+    unavailable(ui, false, text::coming_soon(), add);
+}
+
+/// Where the reason the buttons being drawn are unavailable is kept.
+fn reason_id() -> Id {
+    Id::unique("unavailable-reason")
+}
+
+/// Draws `add` enabled or, when it is not, with `reason` in its buttons' tooltips.
+pub fn unavailable(ui: &mut Ui, enabled: bool, reason: &str, add: impl FnOnce(&mut Ui)) {
+    if enabled {
+        add(ui);
+        return;
+    }
+    ui.data_mut(|d| d.insert_temp(reason_id(), reason.to_owned()));
     ui.add_enabled_ui(false, add);
+    ui.data_mut(|d| d.remove::<String>(reason_id()));
 }
 
 fn background(ui: &Ui, rect: Rect, response: &Response, checked: bool) {
@@ -143,7 +160,10 @@ fn text_color(ui: &Ui) -> Color32 {
 }
 
 fn hint(response: Response, tip: &str) -> Response {
-    let unavailable = format!("{tip}\n{}", text::coming_soon());
+    let unavailable = match response.ctx.data(|d| d.get_temp::<String>(reason_id())) {
+        Some(reason) => format!("{tip}\n{reason}"),
+        None => tip.to_owned(),
+    };
     response
         .on_hover_text(tip)
         .on_disabled_hover_text(unavailable)

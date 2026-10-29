@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Theme and language changes made in another Vellum app now take effect when you return to the window.
 
+### Fixed
+
+- Ribbon buttons that are only unavailable at the moment, such as Undo with nothing to undo, no longer say the feature is coming in a later version.
+
 ## [0.1.0] - 2026-10-25
 
 First public release.
