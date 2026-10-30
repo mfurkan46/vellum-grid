@@ -10,6 +10,7 @@ pub mod menu;
 pub mod motion;
 pub mod options;
 pub mod palette;
+pub mod printers;
 pub mod ribbon;
 pub mod segmented;
 pub mod settings;

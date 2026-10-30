@@ -1,3 +1,5 @@
+//! Printers on this computer and sending files to them: PowerShell on Windows, CUPS elsewhere.
+
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 

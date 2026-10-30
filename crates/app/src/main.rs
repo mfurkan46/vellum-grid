@@ -35,7 +35,7 @@ mod objects_ui;
 mod page_setup;
 mod palette;
 mod paste;
-mod printers;
+use vellum_ui::printers;
 mod printing;
 mod protection_ui;
 mod recovery;
