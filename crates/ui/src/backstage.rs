@@ -351,6 +351,70 @@ pub fn picker(ui: &mut Ui, icon: Icon, title: &str, detail: &str) -> Response {
     response
 }
 
+/// The page buttons under a preview: previous, "n / count" and next. Returns the page to show
+/// when a button was clicked.
+pub fn preview_nav(ui: &mut Ui, index: usize, count: usize) -> Option<usize> {
+    let size = vec2(ui.available_width(), theme::PREVIEW_NAV_HEIGHT);
+    let (row, _) = ui.allocate_exact_size(size, Sense::hover());
+    let galley = ui.painter().layout_no_wrap(
+        format!("{} / {count}", index + 1),
+        theme::backstage_font(),
+        theme::chrome_text(),
+    );
+    let button = vec2(theme::PREVIEW_NAV_BUTTON, theme::PREVIEW_NAV_BUTTON);
+    let half = galley.size().x / 2.0 + theme::PREVIEW_NAV_GAP + button.x / 2.0;
+    let center = row.center() + vec2(0.0, theme::PREVIEW_NAV_GAP / 2.0);
+    ui.painter()
+        .galley(center - galley.size() / 2.0, galley, theme::chrome_text());
+    let previous = Rect::from_center_size(center - vec2(half, 0.0), button);
+    let next = Rect::from_center_size(center + vec2(half, 0.0), button);
+    let mut go = None;
+    if nav_button(
+        ui,
+        previous,
+        fluent::CHEVRON_LEFT,
+        text::previous_page(),
+        index > 0,
+    ) {
+        go = Some(index - 1);
+    }
+    if nav_button(
+        ui,
+        next,
+        fluent::CHEVRON_RIGHT,
+        text::next_page(),
+        index + 1 < count,
+    ) {
+        go = Some(index + 1);
+    }
+    go
+}
+
+fn nav_button(ui: &Ui, rect: Rect, glyph: fluent::Glyph, tip: &str, enabled: bool) -> bool {
+    let sense = if enabled {
+        Sense::click()
+    } else {
+        Sense::hover()
+    };
+    let response = ui.interact(rect, ui.scope_id().with(tip), sense);
+    let painter = ui.painter();
+    if enabled && response.hovered() {
+        painter.rect_filled(
+            rect,
+            CornerRadius::same(theme::MENU_RADIUS),
+            theme::tool_hover(),
+        );
+    }
+    let color = if enabled {
+        theme::icon()
+    } else {
+        theme::icon_disabled()
+    };
+    let area = Rect::from_center_size(rect.center(), vec2(theme::ICON_SIZE, theme::ICON_SIZE));
+    icons::paint(painter, area, Icon::Plain(glyph), color, None);
+    response.on_hover_text(tip).clicked()
+}
+
 pub fn wide_button(ui: &mut Ui, icon: Icon, label: &str) -> Response {
     let width = wide_width(ui, &[label]);
     sized_button(ui, icon, label, width)

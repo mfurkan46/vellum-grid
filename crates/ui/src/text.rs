@@ -1,6 +1,8 @@
 pub type Label = fn() -> &'static str;
 
 crate::texts! {
+    previous_page: "Önceki Sayfa", "Previous Page";
+    next_page: "Sonraki Sayfa", "Next Page";
     coming_soon: "Bu özellik sonraki bir sürümde gelecek.", "This feature is coming in a later version.";
     no_fill: "Dolgu Yok", "No Fill";
     standard_colors: "Standart Renkler", "Standard Colors";

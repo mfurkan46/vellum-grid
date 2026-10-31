@@ -13,9 +13,8 @@ use crate::dialogs::Dialog;
 use crate::fonts::{SystemFonts, family_for};
 use crate::icons::Icon;
 use crate::page_setup::{self, SetupTab};
-use crate::ribbon::widgets::tool;
 use crate::{files, fluent, menu, printers, render, text, theme};
-use vellum_ui::backstage::{heading, picker, square_button};
+use vellum_ui::backstage::{heading, picker, preview_nav, square_button};
 
 static SYSTEM_FONTS: SystemFonts = SystemFonts;
 const MAX_COPIES: u32 = 99;
@@ -457,32 +456,9 @@ impl Spreadsheet {
         let (rect, _) = ui.allocate_exact_size(available, Sense::hover());
         let paper = Rect::from_center_size(rect.center(), size);
         paint_page(ui, paper, zoom, page, &preview.fonts);
-        ui.horizontal(|ui| {
-            ui.add_space((available.x - theme::PREVIEW_NAV_WIDTH).max(0.0) / 2.0);
-            let previous = ui.add_enabled_ui(index > 0, |ui| {
-                tool(
-                    ui,
-                    Icon::Plain(fluent::CHEVRON_LEFT),
-                    text::previous_page(),
-                    false,
-                )
-            });
-            if previous.inner.clicked() {
-                self.print_page = index - 1;
-            }
-            ui.label(format!("{} / {count}", index + 1));
-            let next = ui.add_enabled_ui(index + 1 < count, |ui| {
-                tool(
-                    ui,
-                    Icon::Plain(fluent::CHEVRON_RIGHT),
-                    text::next_page(),
-                    false,
-                )
-            });
-            if next.inner.clicked() {
-                self.print_page = index + 1;
-            }
-        });
+        if let Some(page) = preview_nav(ui, index, count) {
+            self.print_page = page;
+        }
     }
 }
 
