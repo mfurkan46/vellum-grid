@@ -252,7 +252,7 @@ impl Spreadsheet {
                 .inner_margin(Margin::same(theme::PREVIEW_MARGIN))
                 .show(ui, |ui| {
                     ui.set_min_size(ui.available_size());
-                    self.preview_ui(ui);
+                    ui.vertical(|ui| self.preview_ui(ui));
                 });
         });
     }
