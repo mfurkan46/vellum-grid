@@ -213,6 +213,14 @@ pub const RECENT_ROW_HEIGHT: f32 = 48.0;
 pub const RECENT_MAX_WIDTH: f32 = 860.0;
 pub const RECENT_ICON_COLUMN: f32 = 52.0;
 pub const NEW_TILE_WIDTH: f32 = 168.0;
+pub const PRINT_PANEL_WIDTH: f32 = 320.0;
+pub const PRINT_BUTTON: f32 = 88.0;
+pub const PICKER_HEIGHT: f32 = 48.0;
+pub const PICKER_ICON: f32 = 24.0;
+pub const PICKER_ARROW: f32 = 28.0;
+pub const PREVIEW_MARGIN: i8 = 16;
+pub const PREVIEW_NAV_HEIGHT: f32 = 40.0;
+pub const PREVIEW_NAV_WIDTH: f32 = 120.0;
 pub const NEW_TILE_HEIGHT: f32 = 150.0;
 pub const NEW_TILE_LABEL: f32 = 28.0;
 pub const NEW_TILE_INSET: f32 = 16.0;
@@ -274,6 +282,7 @@ crate::colors! {
     popup_shadow: Color32::from_black_alpha(40), Color32::from_black_alpha(115);
     list_selected: Color32::from_rgb(0xCC, 0xE4, 0xF7), Color32::from_rgb(0x26, 0x4F, 0x78);
     error_text: Color32::from_rgb(0xC4, 0x2B, 0x1C), Color32::from_rgb(0xFF, 0x99, 0xA4);
+    preview_bg: Color32::from_rgb(0xF3, 0xF3, 0xF3), Color32::from_rgb(0x1F, 0x1F, 0x1F);
 }
 
 pub fn tab_font() -> FontId {

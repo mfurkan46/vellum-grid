@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use eframe::egui::{
     Align, Align2, CornerRadius, DragValue, FontId, Frame, Layout, Margin, Popup, Pos2, Rect,
-    Response, RichText, Sense, Shadow, Stroke, StrokeKind, Ui, pos2, vec2,
+    RichText, Sense, Shadow, Stroke, Ui, vec2,
 };
 use vellum_grid_core::{Margins, Paper, Scale};
 use vellum_grid_io::pdf::write_pdf;
@@ -11,10 +11,11 @@ use vellum_grid_io::print::{FontBook, Item, Job, PrintPage, layout};
 use crate::app::{Spreadsheet, locale};
 use crate::dialogs::Dialog;
 use crate::fonts::{SystemFonts, family_for};
-use crate::icons::{self, Icon};
+use crate::icons::Icon;
 use crate::page_setup::{self, SetupTab};
 use crate::ribbon::widgets::tool;
 use crate::{files, fluent, menu, printers, render, text, theme};
+use vellum_ui::backstage::{heading, picker, square_button};
 
 static SYSTEM_FONTS: SystemFonts = SystemFonts;
 const MAX_COPIES: u32 = 99;
@@ -259,10 +260,17 @@ impl Spreadsheet {
     fn print_settings(&mut self, ui: &mut Ui) {
         ui.horizontal_top(|ui| {
             ui.spacing_mut().item_spacing.x = theme::DIALOG_SPACING;
-            if square_button(ui, Icon::Plain(fluent::PRINT), text::print()).clicked() {
+            if square_button(ui, Icon::Plain(fluent::PRINT), text::print(), false).clicked() {
                 self.print_now();
             }
-            if square_button(ui, Icon::Plain(fluent::DOCUMENT_PDF), text::pdf_short()).clicked() {
+            if square_button(
+                ui,
+                Icon::Plain(fluent::DOCUMENT_PDF),
+                text::pdf_short(),
+                false,
+            )
+            .clicked()
+            {
                 self.export("pdf");
             }
             ui.vertical(|ui| {
@@ -476,106 +484,6 @@ impl Spreadsheet {
             }
         });
     }
-}
-
-fn heading(ui: &mut Ui, label: &str) {
-    ui.label(
-        RichText::new(label)
-            .size(theme::BACKSTAGE_HEADING)
-            .color(theme::chrome_text()),
-    );
-    ui.add_space(theme::DIALOG_SPACING / 2.0);
-}
-
-fn square_button(ui: &mut Ui, icon: Icon, label: &str) -> Response {
-    let size = vec2(theme::PRINT_BUTTON, theme::PRINT_BUTTON);
-    let (rect, response) = ui.allocate_exact_size(size, Sense::click());
-    let painter = ui.painter();
-    let fill = if response.hovered() {
-        theme::tool_hover()
-    } else {
-        theme::ribbon_bg()
-    };
-    painter.rect(
-        rect,
-        CornerRadius::same(theme::MENU_RADIUS),
-        fill,
-        Stroke::new(1.0, theme::chrome_line()),
-        StrokeKind::Inside,
-    );
-    let area = Rect::from_center_size(
-        pos2(rect.center().x, rect.top() + rect.height() * 0.4),
-        vec2(theme::BIG_ICON_SIZE, theme::BIG_ICON_SIZE),
-    );
-    icons::paint(painter, area, icon, theme::icon(), None);
-    painter.text(
-        pos2(rect.center().x, rect.bottom() - theme::DIALOG_SPACING),
-        Align2::CENTER_BOTTOM,
-        label,
-        theme::menu_font(),
-        theme::chrome_text(),
-    );
-    response
-}
-
-fn picker(ui: &mut Ui, icon: Icon, title: &str, detail: &str) -> Response {
-    let size = vec2(theme::PRINT_PANEL_WIDTH, theme::PICKER_HEIGHT);
-    let (rect, response) = ui.allocate_exact_size(size, Sense::click());
-    let painter = ui.painter();
-    let fill = if response.hovered() {
-        theme::tool_hover()
-    } else {
-        theme::surface()
-    };
-    painter.rect(
-        rect,
-        CornerRadius::same(theme::MENU_RADIUS),
-        fill,
-        Stroke::new(1.0, theme::chrome_line()),
-        StrokeKind::Inside,
-    );
-    let area = Rect::from_center_size(
-        pos2(
-            rect.left() + theme::RECENT_ICON_COLUMN / 2.0,
-            rect.center().y,
-        ),
-        vec2(theme::PICKER_ICON, theme::PICKER_ICON),
-    );
-    icons::paint(painter, area, icon, theme::icon(), None);
-    let x = rect.left() + theme::RECENT_ICON_COLUMN;
-    let width = rect.right() - x - theme::PICKER_ARROW;
-    let title_galley = painter.layout(
-        title.to_owned(),
-        theme::menu_font(),
-        theme::chrome_text(),
-        width,
-    );
-    if detail.is_empty() {
-        let y = rect.center().y - title_galley.size().y / 2.0;
-        painter.galley(pos2(x, y), title_galley, theme::chrome_text());
-    } else {
-        let note = painter.layout_no_wrap(
-            detail.to_owned(),
-            theme::small_font(),
-            theme::chrome_text_muted(),
-        );
-        let top = rect.center().y - (title_galley.size().y + note.size().y) / 2.0;
-        let below = top + title_galley.size().y;
-        painter.galley(pos2(x, top), title_galley, theme::chrome_text());
-        painter
-            .with_clip_rect(Rect::from_min_max(
-                pos2(x, rect.top()),
-                pos2(x + width, rect.bottom()),
-            ))
-            .galley(pos2(x, below), note, theme::chrome_text_muted());
-    }
-    icons::chevron(
-        painter,
-        pos2(rect.right() - theme::PICKER_ARROW / 2.0, rect.center().y),
-        theme::icon(),
-    );
-    ui.add_space(theme::DIALOG_SPACING / 2.0);
-    response
 }
 
 fn paint_page(ui: &Ui, paper: Rect, zoom: f32, page: &PrintPage, fonts: &FontBook) {

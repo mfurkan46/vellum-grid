@@ -24,7 +24,6 @@ vellum_ui::colors! {
     header_text: Color32::from_rgb(0x44, 0x44, 0x44), Color32::from_rgb(0xC8, 0xC8, 0xC8);
     header_text_selected: Color32::from_rgb(0x10, 0x7C, 0x41), Color32::from_rgb(0x4C, 0xC3, 0x8A);
     header_line: Color32::from_rgb(0xC6, 0xC6, 0xC6), Color32::from_rgb(0x4A, 0x4A, 0x4A);
-    preview_bg: Color32::from_rgb(0xF3, 0xF3, 0xF3), Color32::from_rgb(0x1F, 0x1F, 0x1F);
 }
 
 pub const REFERENCE: Color32 = Color32::from_rgb(0x41, 0x72, 0xC4);
@@ -209,14 +208,6 @@ pub const NAME_VALUE_COLUMN: f32 = 130.0;
 pub const NAME_REFERS_COLUMN: f32 = 190.0;
 pub const NAME_SCOPE_COLUMN: f32 = 110.0;
 pub const NEW_TILE_LINES: usize = 5;
-pub const PRINT_PANEL_WIDTH: f32 = 320.0;
-pub const PRINT_BUTTON: f32 = 88.0;
-pub const PICKER_HEIGHT: f32 = 48.0;
-pub const PICKER_ICON: f32 = 24.0;
-pub const PICKER_ARROW: f32 = 28.0;
-pub const PREVIEW_MARGIN: i8 = 16;
-pub const PREVIEW_NAV_HEIGHT: f32 = 40.0;
-pub const PREVIEW_NAV_WIDTH: f32 = 120.0;
 pub const AUTOSAVE_DELAY: f64 = 3.0;
 pub const RECOVERY_INTERVAL: f64 = 60.0;
 pub const DIALOG_INDENT: f32 = 24.0;
