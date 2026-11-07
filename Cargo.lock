@@ -3133,14 +3133,11 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "image",
- "js-sys",
  "rfd",
  "spellbook",
  "vellum-grid-core",
  "vellum-grid-io",
  "vellum-ui",
- "wasm-bindgen-futures",
- "web-sys",
  "zip 9.0.4",
 ]
 

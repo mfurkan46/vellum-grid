@@ -62,10 +62,7 @@ pub fn write(book: Workbook, active: usize, path: PathBuf) {
             let _ = crate::files::store(&path, &bytes);
         }
     };
-    #[cfg(not(target_arch = "wasm32"))]
     std::thread::spawn(job);
-    #[cfg(target_arch = "wasm32")]
-    drop(job);
 }
 
 pub fn remove(path: &Path) {

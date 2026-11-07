@@ -14,7 +14,7 @@ use crate::fonts::{SystemFonts, family_for};
 use crate::icons::Icon;
 use crate::page_setup::{self, SetupTab};
 use crate::{files, fluent, menu, printers, render, text, theme};
-use vellum_ui::backstage::{heading, picker, preview_nav, square_button};
+use vellum_ui::backstage::{heading, picker, preview_nav, preview_scroll, square_button};
 
 static SYSTEM_FONTS: SystemFonts = SystemFonts;
 const MAX_COPIES: u32 = 99;
@@ -453,10 +453,11 @@ impl Spreadsheet {
         let page = &preview.pages[from + index];
         let zoom = (available.x / page.width).min(available.y / page.height);
         let size = vec2(page.width, page.height) * zoom;
-        let (rect, _) = ui.allocate_exact_size(available, Sense::hover());
+        let (rect, area) = ui.allocate_exact_size(available, Sense::hover());
         let paper = Rect::from_center_size(rect.center(), size);
         paint_page(ui, paper, zoom, page, &preview.fonts);
-        if let Some(page) = preview_nav(ui, index, count) {
+        let turned = preview_scroll(ui, &area, index, count);
+        if let Some(page) = preview_nav(ui, index, count).or(turned) {
             self.print_page = page;
         }
     }
@@ -521,7 +522,6 @@ fn paint_page(ui: &Ui, paper: Rect, zoom: f32, page: &PrintPage, fonts: &FontBoo
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn print_file(book: &str) -> Option<PathBuf> {
     let dir = std::env::temp_dir().join(text::app_name());
     std::fs::create_dir_all(&dir).ok()?;
@@ -536,9 +536,4 @@ fn print_file(book: &str) -> Option<PathBuf> {
         })
         .collect();
     Some(dir.join(format!("{safe}.pdf")))
-}
-
-#[cfg(target_arch = "wasm32")]
-fn print_file(book: &str) -> Option<PathBuf> {
-    Some(PathBuf::from(format!("{book}.pdf")))
 }

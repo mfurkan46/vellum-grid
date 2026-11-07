@@ -280,7 +280,6 @@ pub struct Spreadsheet {
     pub issue_key: Option<(u64, usize, Vec<CellRange>)>,
     closing: bool,
     title: String,
-    pub inbox: files::Inbox,
     pub prefs: vellum_ui::settings::Prefs,
     styled: Option<bool>,
 }
@@ -369,7 +368,6 @@ impl Spreadsheet {
             closing: false,
             title: String::new(),
             views: HashMap::new(),
-            inbox: files::Inbox::default(),
             prefs,
             styled: None,
         };
@@ -702,7 +700,7 @@ impl Spreadsheet {
         match action {
             Pending::New => self.reset(blank_book(), text::new_book().to_owned(), None),
             Pending::Open => {
-                if let Some((path, bytes)) = files::pick_open(&self.inbox, ctx) {
+                if let Some((path, bytes)) = files::pick_open() {
                     self.open_bytes(path, bytes);
                 }
             }
@@ -818,10 +816,7 @@ impl Spreadsheet {
     }
 
     fn recovery_tick(&mut self, ctx: &Context) {
-        if cfg!(target_arch = "wasm32")
-            || !self.doc.is_modified()
-            || self.doc.revision() == self.recovery_revision
-        {
+        if !self.doc.is_modified() || self.doc.revision() == self.recovery_revision {
             self.recovery_since = None;
             return;
         }
@@ -1090,12 +1085,6 @@ impl eframe::App for Spreadsheet {
         self.handle_close(&ctx);
         self.autosave_tick(&ctx);
         self.recovery_tick(&ctx);
-        if let Some((path, bytes)) = self.inbox.poll() {
-            self.open_bytes(path, bytes);
-        }
-        if let Some(bytes) = self.inbox.poll_image() {
-            self.insert_picture(bytes);
-        }
         self.sync_title(&ctx);
         if self.backstage.is_some() {
             if !self.modal_open() && ctx.input(|i| i.key_pressed(egui::Key::Escape)) {

@@ -1,6 +1,5 @@
 use eframe::egui::{Context, TextureHandle};
 
-#[cfg(not(target_arch = "wasm32"))]
 pub fn texture(ctx: &Context, name: &str, png: &[u8]) -> Option<TextureHandle> {
     use eframe::egui::{ColorImage, Id, TextureOptions};
 
@@ -14,9 +13,4 @@ pub fn texture(ctx: &Context, name: &str, png: &[u8]) -> Option<TextureHandle> {
     let texture = ctx.load_texture(name, image, TextureOptions::LINEAR);
     ctx.data_mut(|d| d.insert_temp(id, texture.clone()));
     Some(texture)
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn texture(_ctx: &Context, _name: &str, _png: &[u8]) -> Option<TextureHandle> {
-    None
 }

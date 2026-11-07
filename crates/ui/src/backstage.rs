@@ -351,24 +351,34 @@ pub fn picker(ui: &mut Ui, icon: Icon, title: &str, detail: &str) -> Response {
     response
 }
 
-/// The page buttons under a preview: previous, "n / count" and next. Returns the page to show
-/// when a button was clicked.
+/// The page buttons under a preview: previous, an editable page number with "/ count", and
+/// next. Returns the page to show when a button was clicked or a number was typed.
 pub fn preview_nav(ui: &mut Ui, index: usize, count: usize) -> Option<usize> {
     let size = vec2(ui.available_width(), theme::PREVIEW_NAV_HEIGHT);
     let (row, _) = ui.allocate_exact_size(size, Sense::hover());
-    let galley = ui.painter().layout_no_wrap(
-        format!("{} / {count}", index + 1),
+    let total = ui.painter().layout_no_wrap(
+        format!("/ {count}"),
         theme::backstage_font(),
         theme::chrome_text(),
     );
-    let button = vec2(theme::PREVIEW_NAV_BUTTON, theme::PREVIEW_NAV_BUTTON);
-    let half = galley.size().x / 2.0 + theme::PREVIEW_NAV_GAP + button.x / 2.0;
+    let field = vec2(theme::PREVIEW_PAGE_FIELD, theme::INPUT_HEIGHT);
+    let width = field.x + theme::PREVIEW_NAV_GAP / 2.0 + total.size().x;
     let center = row.center() + vec2(0.0, theme::PREVIEW_NAV_GAP / 2.0);
-    ui.painter()
-        .galley(center - galley.size() / 2.0, galley, theme::chrome_text());
+    let left = center.x - width / 2.0;
+    let field_rect = Rect::from_min_size(pos2(left, center.y - field.y / 2.0), field);
+    ui.painter().galley(
+        pos2(
+            field_rect.right() + theme::PREVIEW_NAV_GAP / 2.0,
+            center.y - total.size().y / 2.0,
+        ),
+        total,
+        theme::chrome_text(),
+    );
+    let mut go = page_field(ui, field_rect, index, count);
+    let button = vec2(theme::PREVIEW_NAV_BUTTON, theme::PREVIEW_NAV_BUTTON);
+    let half = width / 2.0 + theme::PREVIEW_NAV_GAP + button.x / 2.0;
     let previous = Rect::from_center_size(center - vec2(half, 0.0), button);
     let next = Rect::from_center_size(center + vec2(half, 0.0), button);
-    let mut go = None;
     if nav_button(
         ui,
         previous,
@@ -388,6 +398,83 @@ pub fn preview_nav(ui: &mut Ui, index: usize, count: usize) -> Option<usize> {
         go = Some(index + 1);
     }
     go
+}
+
+fn page_field(ui: &mut Ui, rect: Rect, index: usize, count: usize) -> Option<usize> {
+    let id = ui.scope_id().with("preview-page");
+    let focused = ui.memory(|m| m.has_focus(id));
+    let mut value = if focused {
+        ui.data(|d| d.get_temp::<String>(id))
+            .unwrap_or_else(|| (index + 1).to_string())
+    } else {
+        (index + 1).to_string()
+    };
+    let response = ui.put(
+        rect,
+        egui::TextEdit::singleline(&mut value)
+            .id(id)
+            .font(theme::backstage_font())
+            .align(Align2::CENTER_CENTER)
+            .background_color(theme::input_bg()),
+    );
+    let response = response.on_hover_text(text::page_number());
+    if response.has_focus() {
+        value.retain(|c| c.is_ascii_digit());
+        ui.data_mut(|d| d.insert_temp(id, value.clone()));
+    }
+    if response.lost_focus() {
+        ui.data_mut(|d| d.remove::<String>(id));
+        let typed = value.parse::<usize>().ok()?;
+        let page = typed.clamp(1, count) - 1;
+        return (page != index).then_some(page);
+    }
+    None
+}
+
+/// Mouse wheel over the preview and PageUp, PageDown, Home and End (when nothing has keyboard
+/// focus) turn the pages. Returns the page to show.
+pub fn preview_scroll(ui: &Ui, preview: &Response, index: usize, count: usize) -> Option<usize> {
+    let last = count.saturating_sub(1);
+    let id = preview.id.with("wheel");
+    let mut step = 0isize;
+    if preview.hovered() {
+        let delta: f32 = ui.input(|i| {
+            i.events
+                .iter()
+                .map(|event| match event {
+                    egui::Event::MouseWheel {
+                        unit: egui::MouseWheelUnit::Point,
+                        delta,
+                        ..
+                    } => delta.y / theme::PREVIEW_WHEEL_STEP,
+                    egui::Event::MouseWheel { delta, .. } => delta.y,
+                    _ => 0.0,
+                })
+                .sum()
+        });
+        let total = ui.data(|d| d.get_temp::<f32>(id).unwrap_or(0.0)) + delta;
+        let notches = total.trunc();
+        step -= notches as isize;
+        ui.data_mut(|d| d.insert_temp(id, total - notches));
+    }
+    let mut target = index.saturating_add_signed(step).min(last);
+    if ui.memory(|m| m.focused().is_none()) {
+        ui.input(|i| {
+            if i.key_pressed(egui::Key::PageDown) {
+                target = (target + 1).min(last);
+            }
+            if i.key_pressed(egui::Key::PageUp) {
+                target = target.saturating_sub(1);
+            }
+            if i.key_pressed(egui::Key::Home) {
+                target = 0;
+            }
+            if i.key_pressed(egui::Key::End) {
+                target = last;
+            }
+        });
+    }
+    (target != index).then_some(target)
 }
 
 fn nav_button(ui: &Ui, rect: Rect, glyph: fluent::Glyph, tip: &str, enabled: bool) -> bool {

@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A fast, open source spreadsheet that works offline.</b><br>
-  Written in Rust. Runs on Linux, Windows and in the browser.
+  Written in Rust. Runs on Linux and Windows.
 </p>
 
 <p align="center">
@@ -48,7 +48,7 @@ It is the first application of **Vellum**, a family of simple, fast and private 
 - **Compatible.** Reads and writes `.xlsx` and `.ods`, opens `.xls` and `.csv`. Files you save open in other office programs.
 - **Familiar.** Ribbon, File screen, context menus, formula bar and shortcuts work the way you expect.
 - **Bilingual.** Turkish and English interfaces. Formulas follow the interface language (`=TOPLA(A1;B1)` or `=SUM(A1,B1)`), while files are always stored in the language-independent form.
-- **Cross-platform.** Linux (Pardus first), Windows and the browser (WebAssembly).
+- **Cross-platform.** Linux (Pardus first) and Windows.
 
 ## Download
 
@@ -90,7 +90,7 @@ Release notes for each version are in the [changelog](CHANGELOG.md).
 <details>
 <summary><b>Formatting</b></summary>
 
-- Font, size, bold, italic, underline, color, fill, borders and alignment from the ribbon; wrap text and merge cells.
+- Font, size, bold, italic, underline, color, fill, borders and alignment from the ribbon; wrap text and merge cells. Every font installed on the computer is available.
 - Number formats: currency, accounting, percentage, date, scientific and custom codes.
 - Format Cells: number, alignment (angle, vertical text, indent, shrink to fit), font, border (13 line styles, diagonals), fill (patterns), protection.
 - Cell Styles gallery and Format Painter.
@@ -135,7 +135,7 @@ Release notes for each version are in the [changelog](CHANGELOG.md).
 - `.ods` read and write, `.xls` read, CSV in UTF-8 and Windows-1254.
 - File screen: New, Open and Recent, Info, Save, Save As, Print, Export.
 - Page setup: paper size, orientation, margins, scaling or fit to page, print area, print titles, headers and footers, page breaks.
-- Print preview, Page Break Preview, PDF export with embedded fonts.
+- Print preview with page buttons, a page number box and mouse wheel paging, Page Break Preview, PDF export with embedded fonts.
 - Light, dark or system theme; in the dark theme the sheet can be dark (colors inverted) or white. Turkish or English interface. Settings are shared by all Vellum applications.
 </details>
 
@@ -169,20 +169,6 @@ sudo apt install build-essential libxkbcommon-dev libgl1-mesa-dev libwayland-dev
 <summary><b>Windows requirements</b></summary>
 
 The MSVC toolchain works without extra setup. With the GNU toolchain (`stable-x86_64-pc-windows-gnu`) a full MinGW-w64 installation (for example WinLibs) is needed in a path **without spaces**, with its `bin` folder on `PATH`. The GNU build also embeds the application icon with `windres`.
-</details>
-
-<details>
-<summary><b>Web (WebAssembly)</b></summary>
-
-```bash
-rustup target add wasm32-unknown-unknown
-cargo install wasm-bindgen-cli --version 0.2.129
-cargo build -p vellum-grid --release --target wasm32-unknown-unknown
-wasm-bindgen --target web --no-typescript --out-dir crates/app/web/pkg target/wasm32-unknown-unknown/release/vellum_grid.wasm
-python -m http.server --directory crates/app/web
-```
-
-The `wasm-bindgen-cli` version must match the `wasm-bindgen` version in `Cargo.lock`.
 </details>
 
 ## Installation
@@ -291,7 +277,7 @@ vellum-grid-cli budget.csv get B2 set B2 1250.50 set C5 "=B2*2" export budget-ne
 crates/
   core/   vellum-grid-core   cells, values, sheets, formula engine, formats, sorting, chart model
   io/     vellum-grid-io     xlsx / xls / ods / csv reading and writing, clipboard format, PDF
-  app/    vellum-grid        desktop and web application (egui)
+  app/    vellum-grid        desktop application (egui)
   ui/     vellum-ui          shared look of the Vellum applications: theme, ribbon, menus, dialogs, languages, settings
   cli/    vellum-grid-cli    command-line tool
 assets/   logos, icons, fonts and screenshots

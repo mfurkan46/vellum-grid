@@ -45,7 +45,6 @@ mod review_ui;
 mod ribbon;
 mod search;
 mod settings;
-#[cfg(not(target_arch = "wasm32"))]
 mod shell;
 mod sparklines_ui;
 mod spelling;
@@ -58,7 +57,6 @@ mod titlebar;
 mod trace;
 mod validation_ui;
 
-#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result {
     #[cfg(target_os = "linux")]
     shell::ensure_template();
@@ -66,6 +64,7 @@ fn main() -> eframe::Result {
         shell::Launch::Open(path) => path,
         shell::Launch::Exit => return Ok(()),
     };
+    fonts::prefetch();
     let options = eframe::NativeOptions {
         viewport: eframe::egui::ViewportBuilder::default()
             .with_title(text::app_name())
@@ -85,26 +84,4 @@ fn main() -> eframe::Result {
         options,
         Box::new(|cc| Ok(Box::new(app::Spreadsheet::new(cc, path)))),
     )
-}
-
-#[cfg(target_arch = "wasm32")]
-fn main() {
-    use eframe::wasm_bindgen::JsCast;
-    use eframe::web_sys::HtmlCanvasElement;
-
-    wasm_bindgen_futures::spawn_local(async {
-        let canvas = eframe::web_sys::window()
-            .and_then(|window| window.document())
-            .and_then(|document| document.get_element_by_id("vellum-grid"))
-            .and_then(|element| element.dyn_into::<HtmlCanvasElement>().ok())
-            .expect("page has a canvas with id 'vellum-grid'");
-        eframe::WebRunner::new()
-            .start(
-                canvas,
-                eframe::WebOptions::default(),
-                Box::new(|cc| Ok(Box::new(app::Spreadsheet::new(cc, None)))),
-            )
-            .await
-            .expect("eframe starts");
-    });
 }

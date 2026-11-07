@@ -81,7 +81,6 @@ pub fn write(book: &Workbook, active: usize, path: &Path) -> Result<Vec<u8>, Str
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn with_extension(path: PathBuf) -> PathBuf {
     if path.extension().is_some() {
         path
@@ -92,40 +91,7 @@ fn with_extension(path: PathBuf) -> PathBuf {
 
 const IMAGES: [&str; 6] = ["png", "jpg", "jpeg", "gif", "bmp", "dib"];
 
-#[derive(Default)]
-pub struct Inbox {
-    #[cfg(target_arch = "wasm32")]
-    slot: std::rc::Rc<std::cell::RefCell<Option<Opened>>>,
-    #[cfg(target_arch = "wasm32")]
-    image: std::rc::Rc<std::cell::RefCell<Option<Vec<u8>>>>,
-}
-
-impl Inbox {
-    pub fn poll_image(&self) -> Option<Vec<u8>> {
-        #[cfg(target_arch = "wasm32")]
-        {
-            self.image.borrow_mut().take()
-        }
-        #[cfg(not(target_arch = "wasm32"))]
-        {
-            None
-        }
-    }
-
-    pub fn poll(&self) -> Option<Opened> {
-        #[cfg(target_arch = "wasm32")]
-        {
-            self.slot.borrow_mut().take()
-        }
-        #[cfg(not(target_arch = "wasm32"))]
-        {
-            None
-        }
-    }
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-pub fn pick_open(_inbox: &Inbox, _ctx: &eframe::egui::Context) -> Option<Opened> {
+pub fn pick_open() -> Option<Opened> {
     let path = rfd::FileDialog::new()
         .add_filter(text::spreadsheet_filter(), &READABLE)
         .add_filter(text::xlsx_filter(), &["xlsx", "xlsm"])
@@ -137,29 +103,13 @@ pub fn pick_open(_inbox: &Inbox, _ctx: &eframe::egui::Context) -> Option<Opened>
     Some((path, bytes))
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-pub fn pick_image(_inbox: &Inbox, _ctx: &eframe::egui::Context) -> Option<Vec<u8>> {
+pub fn pick_image() -> Option<Vec<u8>> {
     let path = rfd::FileDialog::new()
         .add_filter(text::image_filter(), &IMAGES)
         .pick_file()?;
     std::fs::read(path).ok()
 }
 
-#[cfg(target_arch = "wasm32")]
-pub fn pick_image(inbox: &Inbox, ctx: &eframe::egui::Context) -> Option<Vec<u8>> {
-    let slot = inbox.image.clone();
-    let ctx = ctx.clone();
-    wasm_bindgen_futures::spawn_local(async move {
-        let dialog = rfd::AsyncFileDialog::new().add_filter(text::image_filter(), &IMAGES);
-        if let Some(file) = dialog.pick_file().await {
-            *slot.borrow_mut() = Some(file.read().await);
-            ctx.request_repaint();
-        }
-    });
-    None
-}
-
-#[cfg(not(target_arch = "wasm32"))]
 pub fn pick_text() -> Option<Opened> {
     let path = rfd::FileDialog::new()
         .add_filter(text::text_files_filter(), &["csv", "txt", "tsv", "prn"])
@@ -168,12 +118,6 @@ pub fn pick_text() -> Option<Opened> {
     Some((path, bytes))
 }
 
-#[cfg(target_arch = "wasm32")]
-pub fn pick_text() -> Option<Opened> {
-    None
-}
-
-#[cfg(not(target_arch = "wasm32"))]
 pub fn pick_save(book: &str) -> Option<PathBuf> {
     rfd::FileDialog::new()
         .add_filter(text::xlsx_filter(), &["xlsx"])
@@ -187,7 +131,6 @@ pub fn pick_save(book: &str) -> Option<PathBuf> {
         .map(with_extension)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 pub fn pick_export(book: &str, extension: &str) -> Option<PathBuf> {
     let filter = match extension {
         "pdf" => text::pdf_filter(),
@@ -213,68 +156,13 @@ pub fn pick_export(book: &str, extension: &str) -> Option<PathBuf> {
         })
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 pub fn load(path: &Path) -> Result<Workbook, String> {
     let bytes = std::fs::read(path).map_err(|e| e.to_string())?;
     read(path, bytes)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 pub fn store(path: &Path, bytes: &[u8]) -> Result<(), String> {
     std::fs::write(path, bytes).map_err(|e| e.to_string())
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn pick_open(inbox: &Inbox, ctx: &eframe::egui::Context) -> Option<Opened> {
-    let slot = inbox.slot.clone();
-    let ctx = ctx.clone();
-    wasm_bindgen_futures::spawn_local(async move {
-        let dialog = rfd::AsyncFileDialog::new().add_filter(text::spreadsheet_filter(), &READABLE);
-        if let Some(file) = dialog.pick_file().await {
-            let bytes = file.read().await;
-            *slot.borrow_mut() = Some((PathBuf::from(file.file_name()), bytes));
-            ctx.request_repaint();
-        }
-    });
-    None
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn pick_save(book: &str) -> Option<PathBuf> {
-    Some(PathBuf::from(format!("{book}.{DEFAULT_EXTENSION}")))
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn pick_export(book: &str, extension: &str) -> Option<PathBuf> {
-    Some(PathBuf::from(format!("{book}.{extension}")))
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn load(_path: &Path) -> Result<Workbook, String> {
-    Err(text::open_failed().to_owned())
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn store(path: &Path, bytes: &[u8]) -> Result<(), String> {
-    use eframe::wasm_bindgen::JsCast;
-    use eframe::web_sys::{Blob, HtmlAnchorElement, Url};
-
-    let fail = |_| text::save_failed().to_owned();
-    let parts = js_sys::Array::of1(&js_sys::Uint8Array::from(bytes));
-    let blob = Blob::new_with_u8_array_sequence(&parts).map_err(fail)?;
-    let url = Url::create_object_url_with_blob(&blob).map_err(fail)?;
-    let document = eframe::web_sys::window()
-        .and_then(|w| w.document())
-        .ok_or_else(|| text::save_failed().to_owned())?;
-    let anchor: HtmlAnchorElement = document
-        .create_element("a")
-        .map_err(fail)?
-        .dyn_into()
-        .map_err(|_| text::save_failed().to_owned())?;
-    anchor.set_href(&url);
-    anchor.set_download(&path.to_string_lossy());
-    anchor.click();
-    Url::revoke_object_url(&url).map_err(fail)
 }
 
 #[cfg(test)]

@@ -177,17 +177,11 @@ impl Prefs {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn data_dir() -> Option<PathBuf> {
     std::env::var_os("APPDATA")
         .or_else(|| std::env::var_os("XDG_DATA_HOME"))
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/share")))
-}
-
-#[cfg(target_arch = "wasm32")]
-fn data_dir() -> Option<PathBuf> {
-    None
 }
 
 pub fn family_dir() -> Option<PathBuf> {

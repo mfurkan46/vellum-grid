@@ -143,21 +143,8 @@ pub fn form_ui(ui: &mut Ui, form: &mut LinkForm, sheets: &[String]) -> bool {
 pub fn open_external(target: &str) {
     #[cfg(target_os = "windows")]
     let _ = std::process::Command::new("explorer").arg(target).spawn();
-    #[cfg(all(unix, not(target_arch = "wasm32")))]
+    #[cfg(unix)]
     let _ = std::process::Command::new("xdg-open").arg(target).spawn();
-    #[cfg(target_arch = "wasm32")]
-    {
-        use eframe::wasm_bindgen::JsCast;
-        if let Some(anchor) = eframe::web_sys::window()
-            .and_then(|w| w.document())
-            .and_then(|d| d.create_element("a").ok())
-            .and_then(|e| e.dyn_into::<eframe::web_sys::HtmlAnchorElement>().ok())
-        {
-            anchor.set_href(target);
-            anchor.set_target("_blank");
-            anchor.click();
-        }
-    }
 }
 
 impl Spreadsheet {

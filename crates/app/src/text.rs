@@ -22,11 +22,8 @@ vellum_ui::texts! {
     count: "Sayım", "Count";
     sum: "Toplam", "Sum";
     spreadsheet_filter: "Tüm elektronik tablolar", "All spreadsheets";
-    #[cfg(not(target_arch = "wasm32"))]
     xlsx_filter: "Excel Çalışma Kitabı", "Excel Workbook";
-    #[cfg(not(target_arch = "wasm32"))]
     ods_filter: "OpenDocument Elektronik Tablo", "OpenDocument Spreadsheet";
-    #[cfg(not(target_arch = "wasm32"))]
     csv_filter: "CSV (virgülle ayrılmış)", "CSV (Comma delimited)";
     csv_one_sheet: "Bu biçim yalnızca etkin sayfayı kaydeder. Tüm sayfaları korumak için Excel Çalışma Kitabı (.xlsx) olarak kaydedin.", "This format saves only the active sheet. To keep all sheets, save as an Excel Workbook (.xlsx).";
     save_prompt: "Değişiklikleri kaydetmek istiyor musunuz?", "Do you want to save your changes?";
@@ -875,7 +872,6 @@ vellum_ui::texts! {
     group_rows: "Satırlar", "Rows";
     group_columns: "Sütunlar", "Columns";
     text_import: "Metin İçeri Aktar", "Text Import";
-    #[cfg(not(target_arch = "wasm32"))]
     text_files_filter: "Metin dosyaları", "Text files";
     file_origin: "Dosya kökeni:", "File origin:";
     start_row: "Şu satırdan başla:", "Start import at row:";
@@ -1190,7 +1186,6 @@ vellum_ui::texts! {
     custom_scale: "Özel Ölçek…", "Custom Scale…";
     print: "Yazdır", "Print";
     export_pdf: "PDF olarak kaydet", "Save as PDF";
-    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
     pdf_filter: "PDF", "PDF";
     settings: "Ayarlar", "Settings";
     print_active: "Etkin Sayfaları Yazdır", "Print Active Sheets";
@@ -1207,13 +1202,10 @@ vellum_ui::texts! {
     previous_page: "Önceki Sayfa", "Previous Page";
     next_page: "Sonraki Sayfa", "Next Page";
     page_word: "Sayfa", "Page";
-    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
     new_file_name: "Yeni Vellum Grid Çalışma Sayfası", "New Vellum Grid Worksheet";
     #[cfg(target_os = "linux")]
     template_name: "Vellum Grid Çalışma Sayfası", "Vellum Grid Worksheet";
-    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
     txt_filter: "Metin (sekmeyle ayrılmış)", "Text (Tab delimited)";
-    #[cfg_attr(target_arch = "wasm32", allow(dead_code))]
     html_filter: "Web Sayfası", "Web Page";
     export_txt: "Metin (sekmeyle ayrılmış, .txt) olarak kaydet", "Save as Text (Tab delimited, .txt)";
     export_html: "Web Sayfası (.html) olarak kaydet", "Save as Web Page (.html)";

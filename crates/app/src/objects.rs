@@ -464,8 +464,8 @@ impl Spreadsheet {
         self.tab = crate::ribbon::Tab::PictureFormat;
     }
 
-    pub fn pick_picture(&mut self, ctx: &Context) {
-        if let Some(bytes) = crate::files::pick_image(&self.inbox, ctx) {
+    pub fn pick_picture(&mut self) {
+        if let Some(bytes) = crate::files::pick_image() {
             self.insert_picture(bytes);
         }
     }

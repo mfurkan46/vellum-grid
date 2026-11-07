@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Hızlı, açık kaynak ve çevrimdışı çalışan bir hesap tablosu.</b><br>
-  Rust ile yazıldı. Linux, Windows ve tarayıcıda çalışır.
+  Rust ile yazıldı. Linux ve Windows'ta çalışır.
 </p>
 
 <p align="center">
@@ -48,7 +48,7 @@ Vellum Grid, ofiste her gün yapılan tablo işleri için tasarlandı: hücre d�
 - **Uyumlu.** `.xlsx` ve `.ods` okur ve yazar, `.xls` ve `.csv` açar. Kaydedilen dosyalar diğer ofis programlarında açılır.
 - **Tanıdık.** Şerit, Dosya ekranı, sağ tık menüleri, formül çubuğu ve kısayollar alıştığınız gibi çalışır.
 - **İki dilli.** Türkçe ve İngilizce arayüz. Formüller arayüz dilini izler (`=TOPLA(A1;B1)` veya `=SUM(A1,B1)`); dosyalara her zaman dilden bağımsız biçimde kaydedilir.
-- **Her yerde.** Linux (Pardus öncelikli), Windows ve tarayıcı (WebAssembly).
+- **Her yerde.** Linux (Pardus öncelikli) ve Windows.
 
 <a name="indirme"></a>
 
@@ -93,7 +93,7 @@ Her sürümün notları [sürüm notlarında](../CHANGELOG.md) (İngilizce) yer 
 <details>
 <summary><b>Biçimlendirme</b></summary>
 
-- Şeritten yazı tipi, boyut, kalın/italik/altı çizili, renk, dolgu, kenarlık ve hizalama; metni kaydırma, hücre birleştirme.
+- Şeritten yazı tipi, boyut, kalın/italik/altı çizili, renk, dolgu, kenarlık ve hizalama; metni kaydırma, hücre birleştirme. Bilgisayarda kurulu bütün yazı tipleri kullanılabilir.
 - Sayı biçimleri: para birimi, finansal, yüzde, tarih, bilimsel ve özel kodlar.
 - Hücreleri Biçimlendir: sayı, hizalama (açı, dikey metin, girinti, sığdırmak için daralt), yazı tipi, kenarlık (13 çizgi, çapraz), dolgu (desenler), koruma.
 - Hücre Stilleri galerisi ve Biçim Boyacısı.
@@ -138,7 +138,7 @@ Her sürümün notları [sürüm notlarında](../CHANGELOG.md) (İngilizce) yer 
 - `.ods` okuma/yazma, `.xls` okuma, UTF-8 ve Windows-1254 CSV.
 - Dosya ekranı: Yeni, Aç ve Son Kullanılanlar, Bilgi, Kaydet, Farklı Kaydet, Yazdır, Dışarı Aktar.
 - Sayfa yapısı: kâğıt boyutu, yönlendirme, kenar boşlukları, ölçek veya sayfaya sığdırma, yazdırma alanı, yinelenen başlıklar, üst/alt bilgi, sayfa sonları.
-- Baskı önizlemesi, Sayfa Sonu Önizleme, yazı tipleri gömülü PDF çıktısı.
+- Sayfa düğmeleri, sayfa numarası kutusu ve fare tekerleğiyle sayfa değiştirilen baskı önizlemesi, Sayfa Sonu Önizleme, yazı tipleri gömülü PDF çıktısı.
 - Açık, koyu veya sistem teması; koyu temada belge zemini koyu (renkler ters çevrilir) veya beyaz olabilir. Türkçe veya İngilizce arayüz. Ayarlar bütün Vellum uygulamalarında ortaktır.
 </details>
 
@@ -172,20 +172,6 @@ sudo apt install build-essential libxkbcommon-dev libgl1-mesa-dev libwayland-dev
 <summary><b>Windows gereksinimleri</b></summary>
 
 MSVC araç zinciri ek bir şey gerektirmez. GNU araç zinciriyle (`stable-x86_64-pc-windows-gnu`) derlerken tam bir MinGW-w64 (ör. WinLibs) **boşluk içermeyen** bir klasörde kurulu ve `bin` klasörü `PATH`'te olmalıdır. GNU derlemesi uygulama simgesini `windres` ile exe'ye gömer.
-</details>
-
-<details>
-<summary><b>Web (WebAssembly)</b></summary>
-
-```bash
-rustup target add wasm32-unknown-unknown
-cargo install wasm-bindgen-cli --version 0.2.129
-cargo build -p vellum-grid --release --target wasm32-unknown-unknown
-wasm-bindgen --target web --no-typescript --out-dir crates/app/web/pkg target/wasm32-unknown-unknown/release/vellum_grid.wasm
-python -m http.server --directory crates/app/web
-```
-
-`wasm-bindgen-cli` sürümü `Cargo.lock`'taki `wasm-bindgen` sürümüyle aynı olmalıdır.
 </details>
 
 ## Kurulum
@@ -309,7 +295,7 @@ vellum-grid-cli butce.csv get B2 set B2 1250.50 set C5 "=B2*2" export butce-yeni
 crates/
   core/   vellum-grid-core   hücre, değer, sayfa, formül motoru, biçimler, sıralama, grafik modeli
   io/     vellum-grid-io     xlsx / xls / ods / csv okuma-yazma, pano biçimi, PDF
-  app/    vellum-grid        masaüstü ve web uygulaması (egui)
+  app/    vellum-grid        masaüstü uygulaması (egui)
   ui/     vellum-ui          Vellum uygulamalarının ortak görünümü: tema, şerit, menüler, iletişim kutuları, diller, ayarlar
   cli/    vellum-grid-cli    komut satırı aracı
 assets/   logolar, simgeler, yazı tipleri ve ekran görüntüleri

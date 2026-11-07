@@ -1,10 +1,8 @@
-#[cfg(not(target_arch = "wasm32"))]
 use vellum_grid_core::date_serial;
 
 const SECONDS_PER_DAY: f64 = 86_400.0;
 const UNIX_EPOCH_SERIAL: f64 = 25_569.0;
 
-#[cfg(not(target_arch = "wasm32"))]
 #[repr(C)]
 struct Tm {
     sec: i32,
@@ -24,12 +22,11 @@ unsafe extern "C" {
     fn _localtime64_s(tm: *mut Tm, time: *const i64) -> i32;
 }
 
-#[cfg(all(unix, not(target_arch = "wasm32")))]
+#[cfg(unix)]
 unsafe extern "C" {
     fn localtime_r(time: *const i64, tm: *mut Tm) -> *mut Tm;
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn local_time(seconds: i64) -> Option<Tm> {
     let mut tm = Tm {
         sec: 0,
@@ -45,12 +42,11 @@ fn local_time(seconds: i64) -> Option<Tm> {
     };
     #[cfg(target_os = "windows")]
     let ok = unsafe { _localtime64_s(&mut tm, &seconds) == 0 };
-    #[cfg(all(unix, not(target_arch = "wasm32")))]
+    #[cfg(unix)]
     let ok = unsafe { !localtime_r(&seconds, &mut tm).is_null() };
     ok.then_some(tm)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 pub fn now() -> f64 {
     let elapsed = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -65,14 +61,6 @@ pub fn now() -> f64 {
         Some(day + time)
     });
     local.unwrap_or_else(|| elapsed.as_secs_f64() / SECONDS_PER_DAY + UNIX_EPOCH_SERIAL)
-}
-
-#[cfg(target_arch = "wasm32")]
-pub fn now() -> f64 {
-    const SECONDS_PER_MINUTE: f64 = 60.0;
-    let date = js_sys::Date::new_0();
-    let seconds = date.get_time() / 1000.0 - date.get_timezone_offset() * SECONDS_PER_MINUTE;
-    seconds / SECONDS_PER_DAY + UNIX_EPOCH_SERIAL
 }
 
 pub fn today() -> f64 {

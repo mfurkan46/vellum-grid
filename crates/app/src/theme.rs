@@ -111,6 +111,11 @@ pub const SCROLLBAR_SIZE: f32 = 14.0;
 pub const SCROLLBAR_MIN_THUMB: f32 = 24.0;
 
 pub const FONT_COMBO_WIDTH: f32 = 112.0;
+pub const FONT_MENU_WIDTH: f32 = 240.0;
+pub const FONT_MENU_HEIGHT: f32 = 420.0;
+pub const FONT_MENU_ROW: f32 = 24.0;
+pub const FONT_MENU_SIZE: f32 = 14.0;
+pub const FONT_MENU_PADDING: f32 = 8.0;
 pub const SIZE_COMBO_WIDTH: f32 = 46.0;
 pub const FORMAT_COMBO_WIDTH: f32 = 104.0;
 pub const STYLE_SAMPLE_WIDTH: f32 = 112.0;
@@ -283,13 +288,9 @@ pub fn text_on(fill: Color32) -> Color32 {
 pub const WHEEL_ROWS_PER_NOTCH: f32 = 3.0;
 pub const WHEEL_NOTCH: f32 = 50.0;
 
-#[cfg(not(target_arch = "wasm32"))]
 pub const WINDOW_WIDTH: f32 = 1280.0;
-#[cfg(not(target_arch = "wasm32"))]
 pub const WINDOW_HEIGHT: f32 = 800.0;
-#[cfg(not(target_arch = "wasm32"))]
 pub const WINDOW_MIN_WIDTH: f32 = 480.0;
-#[cfg(not(target_arch = "wasm32"))]
 pub const WINDOW_MIN_HEIGHT: f32 = 320.0;
 
 pub const CELL_FONT_SIZE: f32 = 14.67;

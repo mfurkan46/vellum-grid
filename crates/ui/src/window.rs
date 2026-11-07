@@ -75,9 +75,6 @@ fn bar(ui: &mut Ui, logo: Option<&TextureHandle>, add: impl FnOnce(&mut Ui)) {
         }
         ui.add_space(theme::CHROME_SPACING);
         add(ui);
-        if cfg!(target_arch = "wasm32") {
-            return;
-        }
         ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
             ui.spacing_mut().item_spacing.x = 0.0;
             if caption(ui, fluent::DISMISS, text::close(), true).clicked() {

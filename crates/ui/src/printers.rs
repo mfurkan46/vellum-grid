@@ -14,13 +14,10 @@ impl Printers {
         if slot.is_none() {
             *slot = Some(Vec::new());
             let names = Arc::clone(&self.names);
-            #[cfg(not(target_arch = "wasm32"))]
             std::thread::spawn(move || {
                 let found = list();
                 *names.lock().expect("printer list lock") = Some(found);
             });
-            #[cfg(target_arch = "wasm32")]
-            drop(names);
             return None;
         }
         slot.clone()
@@ -44,7 +41,7 @@ fn list() -> Vec<String> {
     lines(output)
 }
 
-#[cfg(all(unix, not(target_arch = "wasm32")))]
+#[cfg(unix)]
 fn list() -> Vec<String> {
     let output = std::process::Command::new("lpstat").arg("-a").output();
     lines(output)
@@ -53,7 +50,6 @@ fn list() -> Vec<String> {
         .collect()
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn lines(output: std::io::Result<std::process::Output>) -> Vec<String> {
     output
         .ok()
@@ -83,7 +79,7 @@ pub fn print(file: &Path, printer: &str) -> bool {
         .is_ok_and(|status| status.success())
 }
 
-#[cfg(all(unix, not(target_arch = "wasm32")))]
+#[cfg(unix)]
 pub fn print(file: &Path, printer: &str) -> bool {
     std::process::Command::new("lp")
         .args(["-d", printer])
@@ -92,16 +88,9 @@ pub fn print(file: &Path, printer: &str) -> bool {
         .is_ok_and(|status| status.success())
 }
 
-#[cfg(target_arch = "wasm32")]
-pub fn print(_file: &Path, _printer: &str) -> bool {
-    false
-}
-
 pub fn open(path: &Path) {
     #[cfg(target_os = "windows")]
     let _ = std::process::Command::new("explorer").arg(path).spawn();
-    #[cfg(all(unix, not(target_arch = "wasm32")))]
+    #[cfg(unix)]
     let _ = std::process::Command::new("xdg-open").arg(path).spawn();
-    #[cfg(target_arch = "wasm32")]
-    let _ = path;
 }

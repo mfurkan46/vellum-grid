@@ -1,21 +1,16 @@
 use eframe::egui::{Popup, Ui};
 
 use super::widgets::{big, big_checked, group, small, tip, tool};
-use crate::app::{Pending, Spreadsheet};
+use crate::app::Spreadsheet;
 use crate::icons::Icon;
 use crate::{fluent, menu, text, theme};
 
 impl Spreadsheet {
     pub(super) fn data_tab(&mut self, ui: &mut Ui) {
-        let ctx = ui.ctx().clone();
         group(ui, text::get_data(), |ui| {
             let icon = Icon::Tinted(fluent::DOCUMENT_TABLE, theme::tint_green());
             if big(ui, icon, text::from_text(), text::from_text_tip(), false).clicked() {
-                if cfg!(target_arch = "wasm32") {
-                    self.request(&ctx, Pending::Open);
-                } else {
-                    self.open_text_import();
-                }
+                self.open_text_import();
             }
         });
         group(ui, text::sort_filter(), |ui| {

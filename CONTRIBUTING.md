@@ -28,7 +28,6 @@ All of the following must pass. The same checks run in CI.
 ```bash
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
-cargo clippy --all-targets --target wasm32-unknown-unknown -- -D warnings
 cargo test
 ```
 

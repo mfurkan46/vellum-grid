@@ -61,13 +61,11 @@ pub fn size_text(bytes: u64) -> String {
 }
 
 pub fn reveal(path: &Path) {
-    #[cfg(target_arch = "wasm32")]
-    let _ = path;
     #[cfg(target_os = "windows")]
     let _ = std::process::Command::new("explorer")
         .arg(format!("/select,{}", path.display()))
         .spawn();
-    #[cfg(all(unix, not(target_arch = "wasm32")))]
+    #[cfg(unix)]
     if let Some(dir) = path.parent() {
         let _ = std::process::Command::new("xdg-open").arg(dir).spawn();
     }

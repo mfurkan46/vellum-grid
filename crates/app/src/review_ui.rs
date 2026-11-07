@@ -24,16 +24,9 @@ pub struct CommentEdit {
 }
 
 pub fn user_name() -> String {
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        std::env::var("USERNAME")
-            .or_else(|_| std::env::var("USER"))
-            .unwrap_or_else(|_| text::default_author().to_owned())
-    }
-    #[cfg(target_arch = "wasm32")]
-    {
-        text::default_author().to_owned()
-    }
+    std::env::var("USERNAME")
+        .or_else(|_| std::env::var("USER"))
+        .unwrap_or_else(|_| text::default_author().to_owned())
 }
 
 fn bold(text: &str) -> RichText {

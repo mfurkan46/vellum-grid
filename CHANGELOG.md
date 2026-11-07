@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- The font list on the Home tab and in Format Cells offers every font installed on the computer, with each name shown in its own typeface.
+- In print preview, a page number can be typed in the box between the arrows, and the mouse wheel, Page Up, Page Down, Home and End move between pages.
+
 ### Changed
 
 - Theme and language changes made in another Vellum app now take effect when you return to the window.

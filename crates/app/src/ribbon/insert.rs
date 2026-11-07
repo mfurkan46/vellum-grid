@@ -29,8 +29,7 @@ impl Spreadsheet {
             ui.horizontal_top(|ui| {
                 let icon = Icon::Plain(fluent::IMAGE);
                 if big(ui, icon, text::pictures(), text::pictures(), false).clicked() {
-                    let ctx = ui.ctx().clone();
-                    self.pick_picture(&ctx);
+                    self.pick_picture();
                 }
                 self.shape_button(ui);
             });

@@ -1,5 +1,6 @@
 use eframe::egui::{
-    Align2, ComboBox, FontFamily, FontId, Popup, RichText, Ui, ViewportCommand, vec2,
+    Align2, ComboBox, CornerRadius, FontFamily, FontId, Popup, ScrollArea, Sense, Ui,
+    ViewportCommand, pos2, vec2,
 };
 use vellum_grid_core::{CellValue, HAlign, STACKED, Underline, VAlign, numfmt};
 
@@ -69,20 +70,47 @@ impl Spreadsheet {
             ui.add_space(theme::RIBBON_ROW_GAP);
             ui.horizontal(|ui| {
                 let mut font = None;
-                ComboBox::from_id_salt("font-name")
+                let opened = ui.scope_id().with("font-menu-open");
+                let menu = ComboBox::from_id_salt("font-name")
                     .width(theme::FONT_COMBO_WIDTH)
+                    .height(theme::FONT_MENU_HEIGHT)
                     .selected_text(style.font.as_str())
                     .show_ui(ui, |ui| {
-                        for name in fonts::available() {
-                            let sample = RichText::new(name)
-                                .font(FontId::new(14.0, FontFamily::Name(name.into())));
-                            if ui.selectable_label(name == style.font, sample).clicked() {
-                                font = Some(name);
-                            }
+                        ui.set_min_width(theme::FONT_MENU_WIDTH);
+                        let names = fonts::available();
+                        let row = theme::FONT_MENU_ROW;
+                        let mut area = ScrollArea::vertical()
+                            .max_height(theme::FONT_MENU_HEIGHT)
+                            .auto_shrink([false, true]);
+                        if !ui.data(|d| d.get_temp::<bool>(opened).unwrap_or(false)) {
+                            let current = names
+                                .iter()
+                                .position(|name| name.eq_ignore_ascii_case(&style.font))
+                                .unwrap_or(0);
+                            let top = current as f32 * (row + ui.spacing().item_spacing.y)
+                                - theme::FONT_MENU_HEIGHT / 2.0;
+                            area = area.vertical_scroll_offset(top.max(0.0));
+                            ui.data_mut(|d| d.insert_temp(opened, true));
                         }
-                    })
-                    .response
-                    .on_hover_text(text::font());
+                        area.show_rows(ui, row, names.len(), |ui, rows| {
+                            for name in &names[rows] {
+                                let family = if fonts::previewable(name) {
+                                    fonts::family_for(name, false, false)
+                                } else {
+                                    FontFamily::Name(fonts::CHROME.into())
+                                };
+                                let selected = name.eq_ignore_ascii_case(&style.font);
+                                let font_id = FontId::new(theme::FONT_MENU_SIZE, family);
+                                if font_row(ui, name, font_id, selected) {
+                                    font = Some(*name);
+                                }
+                            }
+                        });
+                    });
+                if menu.inner.is_none() {
+                    ui.data_mut(|d| d.remove::<bool>(opened));
+                }
+                menu.response.on_hover_text(text::font());
                 if let Some(name) = font {
                     self.restyle(|_, s| s.font = name.to_owned());
                 }
@@ -539,4 +567,24 @@ impl Spreadsheet {
             });
         });
     }
+}
+
+fn font_row(ui: &mut Ui, name: &str, font: FontId, selected: bool) -> bool {
+    let size = vec2(ui.available_width(), theme::FONT_MENU_ROW);
+    let (rect, response) = ui.allocate_exact_size(size, Sense::click());
+    let painter = ui.painter().with_clip_rect(rect.intersect(ui.clip_rect()));
+    let radius = CornerRadius::same(theme::MENU_RADIUS);
+    if selected {
+        painter.rect_filled(rect, radius, theme::tool_checked());
+    } else if response.hovered() {
+        painter.rect_filled(rect, radius, theme::tool_hover());
+    }
+    painter.text(
+        pos2(rect.left() + theme::FONT_MENU_PADDING, rect.center().y),
+        Align2::LEFT_CENTER,
+        name,
+        font,
+        theme::chrome_text(),
+    );
+    response.clicked()
 }
